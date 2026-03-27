@@ -784,23 +784,32 @@ async function doLogin() {
   errEl.textContent = '登入中…';
 
   try {
-    // Add 10s timeout
     const loginPromise = sb.auth.signInWithPassword({ email, password: pw });
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('連線逾時，請確認網路或 Supabase 設定')), 10000)
-    );
-    const { data, error } = await Promise.race([loginPromise, timeoutPromise]);
+    const timeoutPromise = new Error('連線逾時');
+
+    const { data, error } = await Promise.race([
+      loginPromise,
+      new Promise((_, reject) => setTimeout(() => reject(timeoutPromise), 10000))
+    ]);
 
     if (error) {
       errEl.textContent = '⚠ ' + (error.message.includes('Invalid') ? '帳號或密碼錯誤' : error.message);
-      console.error('Login error:', error);
       loginInProgress = false;
       return;
     }
+
     currentUser = data.user;
     console.log('Login OK, user:', currentUser.email);
-    await fetchRole();
-    onLoginSuccess();
+
+    // 【修正點 1】先執行登入成功畫面轉換，不要等權限讀取
+    onLoginSuccess(); 
+
+    // 【修正點 2】在進入系統後，再非同步讀取權限，避免卡死
+    fetchRole().then(() => {
+      applyRoleUI(); // 權限讀到後再更新介面
+      document.getElementById('roleTag').textContent = userRole === 'admin' ? 'ADMIN' : 'VIEWER';
+    });
+
   } catch(e) {
     console.error('doLogin exception:', e);
     errEl.textContent = '⚠ ' + e.message;
