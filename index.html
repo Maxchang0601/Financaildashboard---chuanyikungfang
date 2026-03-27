@@ -718,28 +718,47 @@ let userRole = 'viewer'; // 'admin' | 'viewer'
 // ═══════════════════════════════════════════════
 // AUTH
 // ═══════════════════════════════════════════════
+let loginInProgress = false;
+
 async function doLogin() {
+  if (loginInProgress) return;
+  loginInProgress = true;
   const email = document.getElementById('loginEmail').value.trim();
   const pw    = document.getElementById('loginPassword').value;
   const errEl = document.getElementById('loginErr');
   errEl.textContent = '登入中…';
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
-  if (error) { errEl.textContent = '⚠ 帳號或密碼錯誤'; return; }
-  currentUser = data.user;
-  await fetchRole();
-  onLoginSuccess();
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+    if (error) {
+      errEl.textContent = '⚠ ' + (error.message.includes('Invalid') ? '帳號或密碼錯誤' : error.message);
+      loginInProgress = false;
+      return;
+    }
+    currentUser = data.user;
+    await fetchRole();
+    onLoginSuccess();
+  } catch(e) {
+    errEl.textContent = '⚠ 連線失敗，請確認網路：' + e.message;
+    loginInProgress = false;
+  }
 }
 async function fetchRole() {
-  const { data } = await sb.from('user_roles').select('role').eq('user_id', currentUser.id).single();
-  userRole = data?.role || 'viewer';
+  try {
+    const { data } = await sb.from('user_roles').select('role').eq('user_id', currentUser.id).single();
+    userRole = data?.role || 'viewer';
+  } catch(e) {
+    userRole = 'viewer';
+  }
 }
 async function doLogout() {
   await sb.auth.signOut();
-  currentUser = null; userRole = 'viewer';
+  currentUser = null; userRole = 'viewer'; loginInProgress = false;
   document.getElementById('loginOverlay').style.display = 'flex';
   document.getElementById('appShell').classList.remove('visible');
+  document.getElementById('loginErr').textContent = '';
 }
 function onLoginSuccess() {
+  loginInProgress = false;
   document.getElementById('loginOverlay').style.display = 'none';
   document.getElementById('appShell').classList.add('visible');
   document.getElementById('userEmail').textContent = currentUser.email;
@@ -764,7 +783,8 @@ function applyRoleUI() {
   if (eb) eb.style.display = isAdmin ? '' : 'none';
 }
 sb.auth.onAuthStateChange(async (event, session) => {
-  if (session?.user) {
+  // Only handle SIGNED_IN from existing session (page refresh), not from doLogin()
+  if (event === 'SIGNED_IN' && session?.user && !loginInProgress) {
     currentUser = session.user;
     await fetchRole();
     onLoginSuccess();
