@@ -350,6 +350,49 @@ body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);min
   margin-bottom:1rem;border:1px solid #e2e8f0;display:flex;flex-direction:column;gap:0.5rem;}
 .stat-value-pur{font-size:1.5rem;font-weight:700;color:#6366f1;}
 
+/* ── PURCHASE FULL STYLES from style.css ── */
+.pur-page .app-container{max-width:100%;padding:1.5rem;}
+.pur-page .main-header{display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:2rem;padding:0.5rem 0;}
+.pur-page .logo{display:flex;align-items:center;gap:1rem;}
+.pur-page .logo i{font-size:2rem;color:#6366f1;}
+.pur-page .logo h1{font-size:1.5rem;font-weight:700;letter-spacing:-0.025em;
+  background:linear-gradient(to right,#6366f1,#a855f7);-webkit-background-clip:text;
+  background-clip:text;-webkit-text-fill-color:transparent;}
+.pur-page .header-stats .stat-item{background:white;padding:0.75rem 1.5rem;
+  border-radius:1rem;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);
+  display:flex;flex-direction:column;align-items:flex-end;}
+.pur-page .stat-label{font-size:0.75rem;font-weight:600;color:#64748b;text-transform:uppercase;}
+.pur-page .stat-value{font-size:1.5rem;font-weight:700;color:#6366f1;}
+/* Highlighted total amount display */
+#recordTable td:nth-child(10){font-weight:700;color:#6366f1;}
+/* Source colors */
+.source-cn{color:#dc2626;font-weight:600;}
+.source-tw{color:#16a34a;font-weight:600;}
+/* Better table header */
+#recordTable{table-layout:fixed;min-width:1450px;}
+#recordTable th:nth-child(1){width:45px;text-align:center;}
+#recordTable th:nth-child(2){width:105px;}
+#recordTable th:nth-child(3){width:65px;text-align:center;}
+#recordTable th:nth-child(4){min-width:200px;}
+#recordTable th:nth-child(5){width:95px;}
+#recordTable th:nth-child(6){width:75px;}
+#recordTable th:nth-child(7){width:60px;text-align:center;}
+#recordTable th:nth-child(8){width:85px;}
+#recordTable th:nth-child(9){width:70px;}
+#recordTable th:nth-child(10){width:110px;}
+#recordTable th:nth-child(11){width:110px;}
+#recordTable th:nth-child(12){width:130px;}
+#recordTable th:nth-child(13){width:135px;}
+#recordTable th:nth-child(14){width:90px;text-align:center;}
+#recordTable td:nth-child(4){white-space:normal;word-break:break-word;}
+/* Input field consistent style inside purchase */
+.pur-page input[type=text],.pur-page input[type=number],.pur-page input[type=date],.pur-page select{
+  padding:0.625rem 1rem;border:1px solid #cbd5e1;border-radius:0.75rem;
+  font-size:0.95rem;outline:none;transition:all 0.2s;background:white;font-family:'Inter',sans-serif;}
+.pur-page input:focus,.pur-page select:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.15);}
+.pur-page input:disabled,.pur-page select:disabled{background:#e2e8f0;cursor:not-allowed;}
+
 /* toast */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:var(--paper);
   padding:12px 20px;font-family:'DM Mono',monospace;font-size:0.8rem;z-index:9999;}
@@ -568,7 +611,19 @@ body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);min
 
       <!-- ═══ PURCHASE PAGE ═══ -->
       <div class="page" id="page-purchase">
-        <div class="pur-page">
+        <div class="pur-page" style="padding:1.5rem;">
+          <!-- Purchase Header -->
+          <header class="main-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;padding:0.5rem 0;">
+            <div class="logo" style="display:flex;align-items:center;gap:1rem;">
+              <i class="fas fa-boxes-packing" style="font-size:2rem;color:#6366f1;"></i>
+              <h1 style="font-size:1.5rem;font-weight:700;background:linear-gradient(to right,#6366f1,#a855f7);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">進貨管理系統</h1>
+            </div>
+            <div style="background:white;padding:0.75rem 1.5rem;border-radius:1rem;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);display:flex;flex-direction:column;align-items:flex-end;">
+              <span style="font-size:0.75rem;font-weight:600;color:#64748b;text-transform:uppercase;">本月總額</span>
+              <span id="monthlyTotal" style="font-size:1.5rem;font-weight:700;color:#6366f1;">$0</span>
+            </div>
+          </header>
+
           <section class="controls-card glass">
             <div class="filter-group">
               <div class="pur-input-field">
@@ -744,11 +799,22 @@ async function doLogin() {
 }
 async function fetchRole() {
   try {
-    const { data } = await sb.from('user_roles').select('role').eq('user_id', currentUser.id).single();
+    // Try RPC first (bypasses RLS timing issues)
+    const { data: rpcData, error: rpcErr } = await sb.rpc('get_my_role');
+    if (!rpcErr && rpcData) {
+      userRole = rpcData;
+      console.log('Role from RPC:', userRole);
+      return;
+    }
+    // Fallback: direct query
+    const { data, error } = await sb.from('user_roles').select('role').eq('user_id', currentUser.id).single();
+    console.log('Role query result:', data, error);
     userRole = data?.role || 'viewer';
   } catch(e) {
+    console.error('fetchRole error:', e);
     userRole = 'viewer';
   }
+  console.log('Final userRole:', userRole);
 }
 async function doLogout() {
   await sb.auth.signOut();
