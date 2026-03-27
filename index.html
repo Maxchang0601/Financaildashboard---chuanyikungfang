@@ -6,7 +6,7 @@
 <title>傳藝工坊 管理系統</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=DM+Mono:wght@300;400;500&family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -765,116 +765,81 @@ body{font-family:'Inter',sans-serif;background:var(--paper);color:var(--ink);min
 // ═══════════════════════════════════════════════
 const SUPABASE_URL = 'https://ezugnxnybwzqwyruxthj.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6dWdueG55Ynd6cXd5cnV4dGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0ODkyMzUsImV4cCI6MjA5MDA2NTIzNX0.-kC2KX9PjTXyOUWZSlZB_OewoPWQdRZioET16si_818';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Support both UMD export styles
+const _supabase = window.supabase || window.Supabase;
+if (!_supabase) { alert('Supabase 載入失敗，請重新整理頁面'); }
+const sb = _supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let currentUser = null;
-let userRole = 'viewer'; // 'admin' | 'viewer'
+let userRole = 'viewer';
+let appInitialized = false;
 
 // ═══════════════════════════════════════════════
-// AUTH
+// AUTH — onAuthStateChange is the ONLY trigger
 // ═══════════════════════════════════════════════
-let loginInProgress = false;
-
 async function doLogin() {
-  if (loginInProgress) return;
-  loginInProgress = true;
   const email = document.getElementById('loginEmail').value.trim();
   const pw    = document.getElementById('loginPassword').value;
   const errEl = document.getElementById('loginErr');
   errEl.textContent = '登入中…';
-
-  try {
-    const loginPromise = sb.auth.signInWithPassword({ email, password: pw });
-    const timeoutPromise = new Error('連線逾時');
-
-    const { data, error } = await Promise.race([
-      loginPromise,
-      new Promise((_, reject) => setTimeout(() => reject(timeoutPromise), 10000))
-    ]);
-
-    if (error) {
-      errEl.textContent = '⚠ ' + (error.message.includes('Invalid') ? '帳號或密碼錯誤' : error.message);
-      loginInProgress = false;
-      return;
-    }
-
-    currentUser = data.user;
-    console.log('Login OK, user:', currentUser.email);
-
-    // 【修正點 1】先執行登入成功畫面轉換，不要等權限讀取
-    onLoginSuccess(); 
-
-    // 【修正點 2】在進入系統後，再非同步讀取權限，避免卡死
-    fetchRole().then(() => {
-      applyRoleUI(); // 權限讀到後再更新介面
-      document.getElementById('roleTag').textContent = userRole === 'admin' ? 'ADMIN' : 'VIEWER';
-    });
-
-  } catch(e) {
-    console.error('doLogin exception:', e);
-    errEl.textContent = '⚠ ' + e.message;
-    loginInProgress = false;
+  const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+  if (error) {
+    errEl.textContent = '⚠ ' + (error.message.includes('Invalid') ? '帳號或密碼錯誤' : error.message);
   }
+  // onAuthStateChange handles the rest
 }
-async function fetchRole() {
+
+async function fetchRole(userId) {
   try {
-    // Try RPC first (bypasses RLS timing issues)
-    const { data: rpcData, error: rpcErr } = await sb.rpc('get_my_role');
-    if (!rpcErr && rpcData) {
-      userRole = rpcData;
-      console.log('Role from RPC:', userRole);
-      return;
-    }
-    // Fallback: direct query
-    const { data, error } = await sb.from('user_roles').select('role').eq('user_id', currentUser.id).single();
-    console.log('Role query result:', data, error);
-    userRole = data?.role || 'viewer';
+    const { data, error } = await sb
+      .from('user_roles').select('role').eq('user_id', userId).maybeSingle();
+    console.log('fetchRole:', data, error);
+    return data?.role || 'viewer';
   } catch(e) {
     console.error('fetchRole error:', e);
-    userRole = 'viewer';
+    return 'viewer';
   }
-  console.log('Final userRole:', userRole);
 }
+
 async function doLogout() {
+  appInitialized = false;
   await sb.auth.signOut();
-  currentUser = null; userRole = 'viewer'; loginInProgress = false;
-  document.getElementById('loginOverlay').style.display = 'flex';
-  document.getElementById('appShell').classList.remove('visible');
-  document.getElementById('loginErr').textContent = '';
 }
+
 function onLoginSuccess() {
-  loginInProgress = false;
   document.getElementById('loginOverlay').style.display = 'none';
   document.getElementById('appShell').classList.add('visible');
   document.getElementById('userEmail').textContent = currentUser.email;
   document.getElementById('roleTag').textContent = userRole === 'admin' ? 'ADMIN' : 'VIEWER';
+  console.log('✅ LOGIN OK | role:', userRole, '| uid:', currentUser.id);
   applyRoleUI();
-  initFinancial();
-  initPurchase();
+  if (!appInitialized) {
+    appInitialized = true;
+    initFinancial();
+    initPurchase();
+  }
   loadCloudData();
 }
-function applyRoleUI() {
-  const isAdmin = userRole === 'admin';
-  // Admin panel (financial input sidebar)
-  const ap = document.getElementById('adminPanel');
-  if (ap) ap.style.display = isAdmin ? 'flex' : 'none';
-  // Purchase write buttons
-  ['addBtn','batchAddBtn','reorderBtn','importBtn','deleteSelectedBtn','deleteByIdBtn'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = isAdmin ? '' : 'none';
-  });
-  // Edit report btn
-  const eb = document.getElementById('editReportBtn');
-  if (eb) eb.style.display = isAdmin ? '' : 'none';
+
+function onLogoutSuccess() {
+  currentUser = null; userRole = 'viewer';
+  document.getElementById('loginOverlay').style.display = 'flex';
+  document.getElementById('appShell').classList.remove('visible');
+  document.getElementById('loginErr').textContent = '';
 }
+
 sb.auth.onAuthStateChange(async (event, session) => {
-  // Only handle SIGNED_IN from existing session (page refresh), not from doLogin()
-  if (event === 'SIGNED_IN' && session?.user && !loginInProgress) {
+  console.log('Auth event:', event);
+  if (event === 'SIGNED_IN' && session?.user) {
     currentUser = session.user;
-    await fetchRole();
+    userRole = await fetchRole(currentUser.id);
     onLoginSuccess();
+  } else if (event === 'SIGNED_OUT') {
+    onLogoutSuccess();
   }
 });
+
 
 // ═══════════════════════════════════════════════
 // MODULE SWITCHING
