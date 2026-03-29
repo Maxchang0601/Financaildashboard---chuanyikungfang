@@ -549,7 +549,10 @@ async function doLogin() {
       return;
     }
     CU = data.user;
-    const { data: rd } = await sb.from('user_roles').select('role').eq('user_id', CU.id).maybeSingle();
+    // Fetch role with detailed error logging
+    const { data: rd, error: re } = await sb.from('user_roles').select('role').eq('user_id', CU.id).maybeSingle();
+    console.log('Role query → data:', rd, ' error:', re);
+    if (re) console.error('Role error detail:', re.code, re.message, re.details);
     ROLE = rd?.role || 'viewer';
     console.log('Login OK | role:', ROLE, '| uid:', CU.id);
     showApp();
@@ -682,6 +685,8 @@ const cOpt = {responsive:true,maintainAspectRatio:false,
   plugins:{legend:{labels:{font:{family:'DM Mono',size:10},color:'#7a7268'}}}};
 let cTr,cPi,cAd,cMa;
 function initCharts(){
+  // Destroy existing charts first to prevent canvas reuse error
+  [cTr,cPi,cAd,cMa].forEach(c=>{ if(c) c.destroy(); });
   cTr=new Chart(document.getElementById('cTrend'),{type:'line',data:{labels:MO,datasets:[
     {label:'營收',data:[],borderColor:'#b8860b',backgroundColor:'rgba(184,134,11,0.06)',tension:.4,borderWidth:2.5,pointRadius:3,fill:true},
     {label:'損益',data:[],borderColor:'#1a6b3a',backgroundColor:'rgba(26,107,58,0.06)',tension:.4,borderWidth:2.5,pointRadius:3,fill:true},
