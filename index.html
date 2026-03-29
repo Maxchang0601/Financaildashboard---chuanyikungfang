@@ -526,51 +526,63 @@
 
 <!-- Reorder Modal -->
 <div class="modal-ov" id="reorderMov">
-  <div class="modal" style="max-width:960px;width:95%;max-height:92vh;display:flex;flex-direction:column;">
+  <div class="modal" style="max-width:1100px;width:96%;height:85vh;display:flex;flex-direction:column;overflow:hidden;">
     <div class="mhdr" style="flex-shrink:0;">
       <h2>🔄 再次訂貨</h2>
       <button class="cls" onclick="closeReorder()">&times;</button>
     </div>
-    <div style="display:flex;flex:1;overflow:hidden;min-height:0;">
 
-      <!-- Left: search & select -->
-      <div style="width:50%;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;">
-        <div style="padding:.8rem 1rem;border-bottom:1px solid #e2e8f0;flex-shrink:0;">
-          <div style="position:relative;">
-            <i class="fas fa-search" style="position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.85rem;"></i>
-            <input type="text" id="roSrch" placeholder="搜尋品名、廠商..."
-              style="width:100%;padding:.5rem .8rem .5rem 2.2rem;border:1px solid #cbd5e1;border-radius:.6rem;font-size:.88rem;outline:none;"
-              oninput="renderRoList()">
-          </div>
-          <div style="display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap;" id="roVenFilter">
-            <button class="pill on" data-v="" onclick="setRoVen(this,'')">全部</button>
-          </div>
-        </div>
-        <div style="overflow-y:auto;flex:1;" id="roList"></div>
-        <div style="padding:.6rem 1rem;border-top:1px solid #e2e8f0;font-family:'DM Mono',monospace;font-size:.68rem;color:#64748b;flex-shrink:0;">
-          已選 <span id="roSelCount">0</span> 項 · 點擊品項加入待訂清單
+    <!-- 上半：待訂清單（固定高度） -->
+    <div style="flex-shrink:0;border-bottom:2px solid #e2e8f0;background:#f8fafc;">
+      <div style="padding:.5rem 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;">
+        <span style="font-weight:700;font-size:.88rem;">📋 待訂清單 <span id="roSelCount" style="color:#6366f1;font-family:'DM Mono',monospace;">0</span> 項</span>
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <label style="font-size:.78rem;color:#64748b;">訂貨日期</label>
+          <input type="date" id="roDate" style="padding:.28rem .6rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:.8rem;outline:none;">
+          <span style="font-family:'DM Mono',monospace;font-size:.8rem;color:#6366f1;font-weight:700;">合計：<span id="roTotal">$0</span></span>
         </div>
       </div>
-
-      <!-- Right: pending order list -->
-      <div style="width:50%;display:flex;flex-direction:column;">
-        <div style="padding:.8rem 1rem;border-bottom:1px solid #e2e8f0;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;">
-          <span style="font-weight:700;font-size:.9rem;">待訂清單</span>
-          <div style="display:flex;align-items:center;gap:.5rem;">
-            <label style="font-size:.8rem;color:#64748b;">訂貨日期</label>
-            <input type="date" id="roDate" style="padding:.3rem .6rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:.82rem;outline:none;">
-          </div>
-        </div>
-        <div style="overflow-y:auto;flex:1;" id="roPending">
-          <div style="padding:2rem;text-align:center;color:#94a3b8;font-size:.85rem;">
-            從左側選取品項加入
-          </div>
-        </div>
-        <div style="padding:.6rem 1rem;border-top:1px solid #e2e8f0;font-family:'DM Mono',monospace;font-size:.72rem;color:#64748b;flex-shrink:0;">
-          合計：<span id="roTotal" style="color:#6366f1;font-weight:700;">$0</span>
-        </div>
+      <!-- 待訂清單表格，固定高度可捲動 -->
+      <div style="height:200px;overflow-y:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:800px;">
+          <thead style="position:sticky;top:0;z-index:2;">
+            <tr style="background:#f1f5f9;">
+              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">品名/摘要</th>
+              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">廠商</th>
+              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">貨源</th>
+              <th style="padding:.4rem .6rem;text-align:center;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">數量</th>
+              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">人民幣</th>
+              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">匯率</th>
+              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">台幣單價</th>
+              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">台幣小計</th>
+              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">帳戶</th>
+              <th style="width:36px;border-bottom:1px solid #e2e8f0;"></th>
+            </tr>
+          </thead>
+          <tbody id="roPending">
+            <tr><td colspan="10" style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:.82rem;">從下方選取品項加入</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
+
+    <!-- 下半：搜尋選取區（自動填滿剩餘空間） -->
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+      <div style="padding:.6rem 1rem;border-bottom:1px solid #e2e8f0;flex-shrink:0;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
+        <div style="position:relative;flex:1;min-width:180px;">
+          <i class="fas fa-search" style="position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.82rem;"></i>
+          <input type="text" id="roSrch" placeholder="搜尋品名、廠商..."
+            style="width:100%;padding:.45rem .8rem .45rem 2.2rem;border:1px solid #cbd5e1;border-radius:.6rem;font-size:.85rem;outline:none;"
+            oninput="renderRoList()">
+        </div>
+        <div style="display:flex;gap:.3rem;flex-wrap:wrap;" id="roVenFilter">
+          <button class="pill on" data-v="" onclick="setRoVen(this,'')">全部</button>
+        </div>
+      </div>
+      <!-- 歷史品項列表 -->
+      <div style="overflow-y:auto;flex:1;" id="roList"></div>
+    </div>
+
     <div class="mftr" style="flex-shrink:0;">
       <button class="mbtn2 txt" onclick="closeReorder()">取消</button>
       <button class="mbtn2 pri" onclick="submitReorder()">✓ 確認送出</button>
@@ -1339,55 +1351,74 @@ function toggleRoItem(srcId) {
 }
 
 function renderRoPending() {
-  const container = document.getElementById('roPending');
+  const tbody = document.getElementById('roPending');
   if (!roPending.length) {
-    container.innerHTML = `<div style="padding:2rem;text-align:center;color:#94a3b8;font-size:.85rem;">從左側選取品項加入</div>`;
+    tbody.innerHTML = `<tr><td colspan="10" style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:.82rem;">從下方選取品項加入</td></tr>`;
     document.getElementById('roTotal').textContent = '$0';
+    document.getElementById('roSelCount').textContent = '0';
     return;
   }
   let total = 0;
-  container.innerHTML = roPending.map((r,i) => {
+  tbody.innerHTML = roPending.map((r,i) => {
     const lineTotal = Math.round((parseFloat(r.qty)||1)*(parseFloat(r.twdPrice)||0)*100)/100;
     total += lineTotal;
-    return `<div style="padding:.6rem .8rem;border-bottom:1px solid #f1f5f9;display:grid;grid-template-columns:1fr auto;gap:.4rem;align-items:start;">
-      <div>
-        <div style="font-size:.83rem;font-weight:600;margin-bottom:.3rem;">${r.name}</div>
-        <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
-          <input type="number" value="${r.qty||1}" min="1" placeholder="數量"
-            style="width:65px;padding:.28rem .4rem;border:1px solid #cbd5e1;border-radius:.4rem;font-size:.8rem;"
-            oninput="updRoPending(${i},'qty',this.value)">
-          <input type="number" value="${r.twdPrice||0}" placeholder="台幣單價"
-            style="width:90px;padding:.28rem .4rem;border:1px solid #cbd5e1;border-radius:.4rem;font-size:.8rem;"
-            oninput="updRoPending(${i},'twdPrice',this.value)">
-          <input type="text" value="${r.vendor||''}" placeholder="廠商"
-            style="width:90px;padding:.28rem .4rem;border:1px solid #cbd5e1;border-radius:.4rem;font-size:.8rem;"
-            oninput="updRoPending(${i},'vendor',this.value)">
-          <input type="text" value="${r.account||''}" placeholder="帳戶"
-            style="width:80px;padding:.28rem .4rem;border:1px solid #cbd5e1;border-radius:.4rem;font-size:.8rem;"
-            oninput="updRoPending(${i},'account',this.value)">
-        </div>
-        <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:#6366f1;margin-top:.25rem;">小計：NT$${lineTotal.toLocaleString()}</div>
-      </div>
-      <button onclick="removeRoPending(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:1rem;padding:.2rem;"><i class="fas fa-times"></i></button>
-    </div>`;
+    return `<tr style="border-bottom:1px solid #f1f5f9;">
+      <td style="padding:.35rem .6rem;min-width:150px;max-width:200px;">
+        <div style="font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${r.name}">${r.name}</div>
+      </td>
+      <td style="padding:.35rem .5rem;">
+        <input type="text" value="${r.vendor||''}" style="width:85px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;"
+          oninput="updRP(${i},'vendor',this.value)">
+      </td>
+      <td style="padding:.35rem .5rem;">
+        <select style="padding:.22rem .3rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;" onchange="updRP(${i},'source',this.value)">
+          <option${r.source==='大陸'?' selected':''}>大陸</option>
+          <option${r.source==='台灣'?' selected':''}>台灣</option>
+        </select>
+      </td>
+      <td style="padding:.35rem .5rem;text-align:center;">
+        <input type="number" value="${r.qty||1}" min="1" style="width:55px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;text-align:center;"
+          oninput="updRP(${i},'qty',this.value)">
+      </td>
+      <td style="padding:.35rem .5rem;text-align:right;">
+        <input type="number" value="${r.rmbPrice||0}" style="width:65px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;text-align:right;"
+          oninput="updRP(${i},'rmbPrice',this.value)">
+      </td>
+      <td style="padding:.35rem .5rem;text-align:right;">
+        <input type="number" value="${r.rate||0}" style="width:50px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;text-align:right;"
+          oninput="updRP(${i},'rate',this.value)">
+      </td>
+      <td style="padding:.35rem .5rem;text-align:right;">
+        <input type="number" value="${r.twdPrice||0}" style="width:75px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;text-align:right;"
+          oninput="updRP(${i},'twdPrice',this.value)">
+      </td>
+      <td style="padding:.35rem .5rem;text-align:right;font-family:'DM Mono',monospace;font-size:.76rem;color:#6366f1;font-weight:700;white-space:nowrap;" id="rosub_${i}">
+        NT$${lineTotal.toLocaleString()}
+      </td>
+      <td style="padding:.35rem .5rem;">
+        <input type="text" value="${r.account||''}" style="width:70px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;"
+          oninput="updRP(${i},'account',this.value)">
+      </td>
+      <td style="padding:.35rem .5rem;text-align:center;">
+        <button onclick="removeRoPending(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:.88rem;"><i class="fas fa-times"></i></button>
+      </td>
+    </tr>`;
   }).join('');
   document.getElementById('roTotal').textContent = 'NT$'+total.toLocaleString();
   document.getElementById('roSelCount').textContent = roPending.length;
 }
 
-function updRoPending(i, field, val) {
-  roPending[i][field] = field==='qty'||field==='twdPrice' ? parseFloat(val)||0 : val;
-  // Recalc total display only
+function updRP(i, field, val) {
+  roPending[i][field] = (field==='qty'||field==='twdPrice'||field==='rmbPrice'||field==='rate') ? parseFloat(val)||0 : val;
+  const lineTotal = Math.round((roPending[i].qty||1)*(roPending[i].twdPrice||0)*100)/100;
+  const sub = document.getElementById('rosub_'+i);
+  if(sub) sub.textContent = 'NT$'+lineTotal.toLocaleString();
   let total=0;
   roPending.forEach(r=>{ total+=Math.round((r.qty||1)*(r.twdPrice||0)*100)/100; });
   document.getElementById('roTotal').textContent = 'NT$'+total.toLocaleString();
-  // Update subtotal for this row
-  const rows=document.querySelectorAll('#roPending > div');
-  if(rows[i]){
-    const sub=rows[i].querySelector('div[style*="color:#6366f1"]');
-    if(sub) sub.textContent='小計：NT$'+(Math.round((roPending[i].qty||1)*(roPending[i].twdPrice||0)*100)/100).toLocaleString();
-  }
 }
+
+function updRoPending(i, field, val) { updRP(i, field, val); }
 
 function removeRoPending(i) {
   roPending.splice(i,1);
