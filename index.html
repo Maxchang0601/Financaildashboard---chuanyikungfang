@@ -542,28 +542,40 @@ async function doLogin() {
   const pw = document.getElementById('lPw').value;
   const err = document.getElementById('lErr');
   err.textContent = '登入中…';
-  const { error } = await sb.auth.signInWithPassword({ email, password: pw });
-  if (error) err.textContent = '⚠ ' + (error.message.includes('Invalid') ? '帳號或密碼錯誤' : error.message);
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+    if (error) {
+      err.textContent = '⚠ ' + (error.message.includes('Invalid') ? '帳號或密碼錯誤' : error.message);
+      return;
+    }
+    CU = data.user;
+    const { data: rd } = await sb.from('user_roles').select('role').eq('user_id', CU.id).maybeSingle();
+    ROLE = rd?.role || 'viewer';
+    console.log('Login OK | role:', ROLE, '| uid:', CU.id);
+    showApp();
+  } catch(e) {
+    err.textContent = '⚠ 連線錯誤：' + e.message;
+    console.error('Login error:', e);
+  }
 }
 
 async function doLogout() {
   APP_READY = false;
   await sb.auth.signOut();
+  CU = null; ROLE = 'viewer';
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('app').classList.remove('on');
+  document.getElementById('lErr').textContent = '';
 }
 
-sb.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && session?.user) {
+// Only for page refresh - restore existing session
+sb.auth.getSession().then(async ({ data: { session } }) => {
+  if (session?.user) {
     CU = session.user;
-    // fetch role
-    const { data } = await sb.from('user_roles').select('role').eq('user_id', CU.id).maybeSingle();
-    ROLE = data?.role || 'viewer';
-    console.log('Role:', ROLE, 'UID:', CU.id);
+    const { data: rd } = await sb.from('user_roles').select('role').eq('user_id', CU.id).maybeSingle();
+    ROLE = rd?.role || 'viewer';
+    console.log('Session restored | role:', ROLE);
     showApp();
-  } else if (event === 'SIGNED_OUT') {
-    CU = null; ROLE = 'viewer';
-    document.getElementById('loginPage').style.display = 'flex';
-    document.getElementById('app').classList.remove('on');
-    document.getElementById('lErr').textContent = '';
   }
 });
 
