@@ -366,7 +366,7 @@
             <div class="act-btns">
               <button id="btnAdd" class="pa pri" onclick="openAddModal()"><i class="fas fa-plus"></i> 新增紀錄</button>
               <button id="btnBatch" class="pa opri" onclick="openBatchModal()"><i class="fas fa-list-check"></i> 批次新增</button>
-              <button id="btnReorder" class="pa osuc" onclick="handleReorder()"><i class="fas fa-redo"></i> 再次訂貨</button>
+              <button id="btnReorder" class="pa osuc" onclick="openReorderModal()"><i class="fas fa-redo"></i> 再次訂貨</button>
               <button class="pa oinf" onclick="exportExcel()"><i class="fas fa-file-excel"></i> 導出 Excel</button>
               <button id="btnImport" class="pa suc" onclick="document.getElementById('impFile').click()"><i class="fas fa-file-import"></i> 導入 Excel</button>
               <input type="file" id="impFile" accept=".xlsx,.xls" style="display:none" onchange="handleImport(this)">
@@ -521,6 +521,60 @@
       <button class="mbtn2 txt" style="margin-top:.75rem" onclick="addBRow()"><i class="fas fa-plus-circle"></i> 增加一行</button>
     </div>
     <div class="mftr"><button class="mbtn2 txt" onclick="closeBatch()">取消</button><button class="mbtn2 pri" onclick="saveBatch()">全部儲存</button></div>
+  </div>
+</div>
+
+<!-- Reorder Modal -->
+<div class="modal-ov" id="reorderMov">
+  <div class="modal" style="max-width:960px;width:95%;max-height:92vh;display:flex;flex-direction:column;">
+    <div class="mhdr" style="flex-shrink:0;">
+      <h2>🔄 再次訂貨</h2>
+      <button class="cls" onclick="closeReorder()">&times;</button>
+    </div>
+    <div style="display:flex;flex:1;overflow:hidden;min-height:0;">
+
+      <!-- Left: search & select -->
+      <div style="width:50%;border-right:1px solid #e2e8f0;display:flex;flex-direction:column;">
+        <div style="padding:.8rem 1rem;border-bottom:1px solid #e2e8f0;flex-shrink:0;">
+          <div style="position:relative;">
+            <i class="fas fa-search" style="position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.85rem;"></i>
+            <input type="text" id="roSrch" placeholder="搜尋品名、廠商..."
+              style="width:100%;padding:.5rem .8rem .5rem 2.2rem;border:1px solid #cbd5e1;border-radius:.6rem;font-size:.88rem;outline:none;"
+              oninput="renderRoList()">
+          </div>
+          <div style="display:flex;gap:.4rem;margin-top:.5rem;flex-wrap:wrap;" id="roVenFilter">
+            <button class="pill on" data-v="" onclick="setRoVen(this,'')">全部</button>
+          </div>
+        </div>
+        <div style="overflow-y:auto;flex:1;" id="roList"></div>
+        <div style="padding:.6rem 1rem;border-top:1px solid #e2e8f0;font-family:'DM Mono',monospace;font-size:.68rem;color:#64748b;flex-shrink:0;">
+          已選 <span id="roSelCount">0</span> 項 · 點擊品項加入待訂清單
+        </div>
+      </div>
+
+      <!-- Right: pending order list -->
+      <div style="width:50%;display:flex;flex-direction:column;">
+        <div style="padding:.8rem 1rem;border-bottom:1px solid #e2e8f0;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-weight:700;font-size:.9rem;">待訂清單</span>
+          <div style="display:flex;align-items:center;gap:.5rem;">
+            <label style="font-size:.8rem;color:#64748b;">訂貨日期</label>
+            <input type="date" id="roDate" style="padding:.3rem .6rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:.82rem;outline:none;">
+          </div>
+        </div>
+        <div style="overflow-y:auto;flex:1;" id="roPending">
+          <div style="padding:2rem;text-align:center;color:#94a3b8;font-size:.85rem;">
+            從左側選取品項加入
+          </div>
+        </div>
+        <div style="padding:.6rem 1rem;border-top:1px solid #e2e8f0;font-family:'DM Mono',monospace;font-size:.72rem;color:#64748b;flex-shrink:0;">
+          合計：<span id="roTotal" style="color:#6366f1;font-weight:700;">$0</span>
+        </div>
+      </div>
+    </div>
+    <div class="mftr" style="flex-shrink:0;">
+      <button class="mbtn2 txt" onclick="closeReorder()">取消</button>
+      <button class="mbtn2 pri" onclick="submitReorder()">✓ 確認送出</button>
+    </div>
   </div>
 </div>
 
@@ -1182,37 +1236,189 @@ function addBRow(d){
   document.getElementById('bBody').appendChild(tr);
 }
 async function saveBatch(){
-  const rows=document.querySelectorAll('#bBody tr');let saved=0;const toSave=[];
+  const rows=document.querySelectorAll('#bBody tr');let toSave=[];
   rows.forEach(row=>{
     const name=row.querySelector('.bn')?.value.trim();if(!name)return;
     const date=row.querySelector('.bd')?.value||new Date().toISOString().slice(0,10);
     const qty=parseFloat(row.querySelector('.bq')?.value)||1;
     const twd=parseFloat(row.querySelector('.btw2')?.value)||0;
-    const rec={id:Date.now().toString()+Math.random().toString(36).substr(2,5)+saved,
+    toSave.push({
+      id:Date.now().toString()+Math.random().toString(36).substr(2,5)+toSave.length,
       orderId:genID(date),date,type:row.querySelector('.bt')?.value||'進貨',name,
       salesPrice:parseFloat(row.querySelector('.bsp')?.value)||0,
       source:row.querySelector('.bso')?.value||'大陸',qty,
       rmbPrice:parseFloat(row.querySelector('.br')?.value)||0,
       rate:parseFloat(row.querySelector('.bra')?.value)||0,
       twdPrice:twd,twdTotal:Math.round(qty*twd*100)/100,
-      account:row.querySelector('.bac')?.value||'',vendor:row.querySelector('.bv')?.value||''};
-    RECS.unshift(rec);toSave.push(rec);saved++;
+      account:row.querySelector('.bac')?.value||'',vendor:row.querySelector('.bv')?.value||''
+    });
   });
-  if(!saved){showToast('⚠ 請至少填寫一筆');return;}
-  for(const r of toSave)await savePurRec(r);
-  closeBatch();updFilters();renderRecs();showToast(`✓ 已儲存 ${saved} 筆`);
+  if(!toSave.length){showToast('⚠ 請至少填寫一筆');return;}
+  // Batch upsert
+  const sbRows=toSave.map(r=>({
+    id:r.id,user_id:CU.id,order_id:r.orderId,date:r.date,type:r.type,name:r.name,
+    sales_price:r.salesPrice||0,source:r.source,qty:r.qty,rmb_price:r.rmbPrice||0,
+    rate:r.rate||0,twd_price:r.twdPrice||0,twd_total:r.twdTotal||0,
+    account:r.account,vendor:r.vendor
+  }));
+  const{error}=await sb.from('purchase_records').upsert(sbRows,{onConflict:'id'});
+  if(error){showToast('⚠ 雲端儲存失敗：'+error.message);console.error(error);return;}
+  RECS=[...toSave,...RECS];
+  closeBatch();updFilters();renderRecs();showToast(`✓ 已儲存 ${toSave.length} 筆`);
 }
 
-// Reorder
-async function handleReorder(){
-  const ids=[...document.querySelectorAll('.rc:checked')].map(c=>c.dataset.id);
-  if(!ids.length){showToast('⚠ 請先勾選要再次訂貨的紀錄');return;}
-  const today=new Date().toISOString().slice(0,10);const newR=[];
-  ids.forEach(id=>{const r=RECS.find(x=>x.id===id);if(!r)return;
-    newR.push({...r,id:Date.now().toString()+Math.random().toString(36).substr(2,5),date:today,orderId:genID(today)});
+// ── REORDER ──
+let roPending = []; // items in pending order list
+
+function openReorderModal() {
+  roPending = [];
+  document.getElementById('roSrch').value = '';
+  document.getElementById('roDate').value = new Date().toISOString().slice(0,10);
+  // Build vendor filter pills
+  const vens = [...new Set(RECS.map(r=>r.vendor).filter(Boolean))].sort();
+  document.getElementById('roVenFilter').innerHTML =
+    `<button class="pill on" data-v="" onclick="setRoVen(this,'')">全部</button>` +
+    vens.map(v=>`<button class="pill" data-v="${v}" onclick="setRoVen(this,'${v}')">${v}</button>`).join('');
+  renderRoList();
+  renderRoPending();
+  document.getElementById('reorderMov').classList.add('on');
+}
+function closeReorder() { document.getElementById('reorderMov').classList.remove('on'); }
+
+let roVenFilter = '';
+function setRoVen(btn, v) {
+  document.querySelectorAll('#roVenFilter .pill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  roVenFilter = v;
+  renderRoList();
+}
+
+function renderRoList() {
+  const q = document.getElementById('roSrch').value.toLowerCase();
+  // Deduplicate by name+vendor (show latest version of each unique item)
+  const seen = new Map();
+  RECS.forEach(r => {
+    const key = r.name + '|' + r.vendor;
+    if (!seen.has(key)) seen.set(key, r);
   });
-  for(const r of newR){RECS.unshift(r);await savePurRec(r);}
-  updFilters();renderRecs();showToast(`✓ 已複製 ${newR.length} 筆`);
+  let items = [...seen.values()];
+  if (roVenFilter) items = items.filter(r=>r.vendor===roVenFilter);
+  if (q) items = items.filter(r=>r.name.toLowerCase().includes(q)||(r.vendor||'').toLowerCase().includes(q));
+
+  const pendingNames = new Set(roPending.map(p=>p._srcId));
+  document.getElementById('roList').innerHTML = items.length === 0
+    ? `<div style="padding:2rem;text-align:center;color:#94a3b8;font-size:.85rem;">無符合結果</div>`
+    : items.map(r => {
+        const inPending = pendingNames.has(r.id);
+        return `<div onclick="toggleRoItem('${r.id}')" style="padding:.65rem 1rem;border-bottom:1px solid #f1f5f9;cursor:pointer;display:flex;align-items:center;gap:.7rem;transition:background .15s;${inPending?'background:#eff6ff;':''}"
+          onmouseover="if(!this.dataset.sel)this.style.background='#f8fafc'" onmouseout="if(!this.dataset.sel)this.style.background=''" data-sel="${inPending?'1':''}">
+          <div style="width:18px;height:18px;border-radius:4px;border:2px solid ${inPending?'#6366f1':'#cbd5e1'};background:${inPending?'#6366f1':'white'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            ${inPending?'<i class="fas fa-check" style="font-size:.6rem;color:white;"></i>':''}
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name}</div>
+            <div style="font-size:.72rem;color:#64748b;">${r.vendor||'—'} · ${r.source} · NT$${(r.twdPrice||0).toLocaleString()}/個</div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:.72rem;color:#6366f1;flex-shrink:0;">NT$${(r.twdTotal||0).toLocaleString()}</div>
+        </div>`;
+      }).join('');
+  document.getElementById('roSelCount').textContent = roPending.length;
+}
+
+function toggleRoItem(srcId) {
+  const existing = roPending.findIndex(p=>p._srcId===srcId);
+  if (existing > -1) {
+    roPending.splice(existing, 1);
+  } else {
+    const r = RECS.find(x=>x.id===srcId);
+    if (!r) return;
+    roPending.push({ ...r, _srcId: srcId, _newId: Date.now().toString()+Math.random().toString(36).substr(2,5) });
+  }
+  renderRoList();
+  renderRoPending();
+}
+
+function renderRoPending() {
+  const container = document.getElementById('roPending');
+  if (!roPending.length) {
+    container.innerHTML = `<div style="padding:2rem;text-align:center;color:#94a3b8;font-size:.85rem;">從左側選取品項加入</div>`;
+    document.getElementById('roTotal').textContent = '$0';
+    return;
+  }
+  let total = 0;
+  container.innerHTML = roPending.map((r,i) => {
+    const lineTotal = Math.round((parseFloat(r.qty)||1)*(parseFloat(r.twdPrice)||0)*100)/100;
+    total += lineTotal;
+    return `<div style="padding:.6rem .8rem;border-bottom:1px solid #f1f5f9;display:grid;grid-template-columns:1fr auto;gap:.4rem;align-items:start;">
+      <div>
+        <div style="font-size:.83rem;font-weight:600;margin-bottom:.3rem;">${r.name}</div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;">
+          <input type="number" value="${r.qty||1}" min="1" placeholder="數量"
+            style="width:65px;padding:.28rem .4rem;border:1px solid #cbd5e1;border-radius:.4rem;font-size:.8rem;"
+            oninput="updRoPending(${i},'qty',this.value)">
+          <input type="number" value="${r.twdPrice||0}" placeholder="台幣單價"
+            style="width:90px;padding:.28rem .4rem;border:1px solid #cbd5e1;border-radius:.4rem;font-size:.8rem;"
+            oninput="updRoPending(${i},'twdPrice',this.value)">
+          <input type="text" value="${r.vendor||''}" placeholder="廠商"
+            style="width:90px;padding:.28rem .4rem;border:1px solid #cbd5e1;border-radius:.4rem;font-size:.8rem;"
+            oninput="updRoPending(${i},'vendor',this.value)">
+          <input type="text" value="${r.account||''}" placeholder="帳戶"
+            style="width:80px;padding:.28rem .4rem;border:1px solid #cbd5e1;border-radius:.4rem;font-size:.8rem;"
+            oninput="updRoPending(${i},'account',this.value)">
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:#6366f1;margin-top:.25rem;">小計：NT$${lineTotal.toLocaleString()}</div>
+      </div>
+      <button onclick="removeRoPending(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:1rem;padding:.2rem;"><i class="fas fa-times"></i></button>
+    </div>`;
+  }).join('');
+  document.getElementById('roTotal').textContent = 'NT$'+total.toLocaleString();
+  document.getElementById('roSelCount').textContent = roPending.length;
+}
+
+function updRoPending(i, field, val) {
+  roPending[i][field] = field==='qty'||field==='twdPrice' ? parseFloat(val)||0 : val;
+  // Recalc total display only
+  let total=0;
+  roPending.forEach(r=>{ total+=Math.round((r.qty||1)*(r.twdPrice||0)*100)/100; });
+  document.getElementById('roTotal').textContent = 'NT$'+total.toLocaleString();
+  // Update subtotal for this row
+  const rows=document.querySelectorAll('#roPending > div');
+  if(rows[i]){
+    const sub=rows[i].querySelector('div[style*="color:#6366f1"]');
+    if(sub) sub.textContent='小計：NT$'+(Math.round((roPending[i].qty||1)*(roPending[i].twdPrice||0)*100)/100).toLocaleString();
+  }
+}
+
+function removeRoPending(i) {
+  roPending.splice(i,1);
+  renderRoList();
+  renderRoPending();
+}
+
+async function submitReorder() {
+  if (!roPending.length) { showToast('⚠ 待訂清單是空的'); return; }
+  const date = document.getElementById('roDate').value || new Date().toISOString().slice(0,10);
+  const newRecs = roPending.map(r => ({
+    id: r._newId,
+    orderId: genID(date),
+    date, type: r.type||'進貨', name: r.name,
+    salesPrice: r.salesPrice||0, source: r.source||'大陸',
+    qty: r.qty||1, rmbPrice: r.rmbPrice||0, rate: r.rate||0,
+    twdPrice: r.twdPrice||0,
+    twdTotal: Math.round((r.qty||1)*(r.twdPrice||0)*100)/100,
+    account: r.account||'', vendor: r.vendor||''
+  }));
+  const sbRows = newRecs.map(r=>({
+    id:r.id, user_id:CU.id, order_id:r.orderId, date:r.date, type:r.type, name:r.name,
+    sales_price:r.salesPrice||0, source:r.source, qty:r.qty, rmb_price:r.rmbPrice||0,
+    rate:r.rate||0, twd_price:r.twdPrice||0, twd_total:r.twdTotal||0,
+    account:r.account, vendor:r.vendor
+  }));
+  const { error } = await sb.from('purchase_records').upsert(sbRows, {onConflict:'id'});
+  if (error) { showToast('⚠ 送出失敗：'+error.message); return; }
+  RECS = [...newRecs, ...RECS];
+  closeReorder(); updFilters(); renderRecs();
+  showToast(`✓ 已送出 ${newRecs.length} 筆再次訂貨`);
 }
 
 // Delete
@@ -1249,20 +1455,36 @@ function handleImport(inp){
       const wb=XLSX.read(data,{type:'array',cellDates:true,dateNF:'yyyy-mm-dd'});
       const json=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{raw:false,dateNF:'yyyy-mm-dd'});
       if(!json.length){showToast('⚠ 無資料');return;}
-      const today=new Date().toISOString().slice(0,10);let cnt=0;
-      for(const row of json){
+      const today=new Date().toISOString().slice(0,10);
+      const imported=[];
+      json.forEach((row,i)=>{
         const qty=parseFloat(row['數量'])||1,twd=parseFloat(row['台幣單價'])||0;
         let d=row['日期']?row['日期'].toString().trim().replace(/\//g,'-'):today;
         if(!d||d.length<8)d=today;
-        const rec={id:Date.now().toString()+Math.random().toString(36).substr(2,5)+cnt,
+        imported.push({
+          id:Date.now().toString()+Math.random().toString(36).substr(2,5)+i,
           orderId:genID(d),date:d,type:row['類別']||'進貨',name:row['品名/摘要']||'未命名',
           salesPrice:parseFloat(row['銷售定價'])||0,source:row['貨源']||'大陸',qty,
           rmbPrice:parseFloat(row['人民幣單價'])||0,rate:parseFloat(row['市場匯率'])||4.5,
-          twdPrice:twd,twdTotal:Math.round(qty*twd*100)/100,account:row['帳戶']||'',vendor:row['供應廠商']||''};
-        RECS.unshift(rec);await savePurRec(rec);cnt++;
-      }
-      updFilters();renderRecs();showToast(`✓ 導入 ${cnt} 筆`);inp.value='';
-    }catch(err){console.error(err);showToast('⚠ 導入失敗');}
+          twdPrice:twd,twdTotal:Math.round(qty*twd*100)/100,
+          account:row['帳戶']||'',vendor:row['供應廠商']||''
+        });
+      });
+      // Batch save to Supabase
+      showToast('⏳ 上傳中...');
+      const rows=imported.map(r=>({
+        id:r.id,user_id:CU.id,order_id:r.orderId,date:r.date,type:r.type,name:r.name,
+        sales_price:r.salesPrice||0,source:r.source,qty:r.qty,rmb_price:r.rmbPrice||0,
+        rate:r.rate||0,twd_price:r.twdPrice||0,twd_total:r.twdTotal||0,
+        account:r.account,vendor:r.vendor
+      }));
+      const{error}=await sb.from('purchase_records').upsert(rows,{onConflict:'id'});
+      if(error){console.error('import save error:',error);showToast('⚠ 雲端儲存失敗：'+error.message);return;}
+      RECS=[...imported,...RECS];
+      updFilters();renderRecs();
+      showToast(`✓ 成功導入並儲存 ${imported.length} 筆`);
+      inp.value='';
+    }catch(err){console.error(err);showToast('⚠ 導入失敗，請檢查格式');}
   };rd.readAsArrayBuffer(file);
 }
 
