@@ -655,14 +655,14 @@ function showApp() {
   document.getElementById('app').classList.add('on');
   document.getElementById('uEmail').textContent = CU.email;
   document.getElementById('uRole').textContent = ROLE === 'admin' ? 'ADMIN' : 'VIEWER';
-  // Admin-only UI
   const isA = ROLE === 'admin';
+  // Admin-only: financial data edit panel + report edit
   document.getElementById('editDataBtn').style.display = isA ? '' : 'none';
   document.getElementById('editRptBtn').style.display = isA ? '' : 'none';
-  ['btnAdd','btnBatch','btnReorder','btnImport','btnDelSel'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.style.display = isA ? '' : 'none';
-  });
+  // Purchase buttons: ALL users can use (viewer can create their own records)
+  // Only hide delete-by-ID for non-admin
+  const delArea = document.querySelector('.id-del');
+  if(delArea) delArea.style.display = isA ? '' : 'none';
   if (!APP_READY) {
     APP_READY = true;
     initFin();
@@ -869,7 +869,9 @@ function setCS(t,m){const el=document.getElementById('cloudSt');el.className='cl
 
 async function loadCloud(){
   if(!CU)return;
-  const{data}=await sb.from('monthly_data').select('month,year,data').eq('user_id',CU.id);
+  // Load all financial data (RLS allows all authenticated users to read)
+  const{data,error}=await sb.from('monthly_data').select('month,year,data');
+  if(error){console.error('loadCloud error:',error);return;}
   if(data&&data.length>0){
     data.forEach(r=>{if(r.data)sd(r.year,r.month,r.data);});
     const yrs=[...new Set(data.map(r=>r.year))].sort((a,b)=>b-a);
@@ -1064,6 +1066,7 @@ function initPur(){
 
 async function loadPurCloud(){
   if(!CU)return;
+  // All authenticated users can read purchase records (RLS policy allows this)
   const{data,error}=await sb.from('purchase_records').select('*').order('date',{ascending:false});
   if(error){console.error('loadPur:',error);return;}
   if(data){
@@ -1071,7 +1074,8 @@ async function loadPurCloud(){
       id:r.id,orderId:r.order_id,date:r.date,type:r.type,name:r.name,
       salesPrice:r.sales_price||0,source:r.source,qty:r.qty||1,
       rmbPrice:r.rmb_price||0,rate:r.rate||0,twdPrice:r.twd_price||0,
-      twdTotal:r.twd_total||0,account:r.account||'',vendor:r.vendor||''
+      twdTotal:r.twd_total||0,account:r.account||'',vendor:r.vendor||'',
+      userId:r.user_id  // keep for ownership check
     }));
     updFilters();renderRecs();
   }
@@ -1120,7 +1124,7 @@ function renderRecs(){
   document.getElementById('monTotal').textContent='NT$'+Math.round(tot).toLocaleString();
   const pages=Math.max(1,Math.ceil(fl.length/PG_SZ));if(PG>pages)PG=pages;
   const slice=fl.slice((PG-1)*PG_SZ,PG*PG_SZ);
-  const isA=ROLE==='admin';
+  const isA = ROLE === 'admin';
   document.getElementById('recBody').innerHTML=slice.map(r=>`<tr>
     <td><input type="checkbox" class="rc" data-id="${r.id}"></td>
     <td>${r.date}</td>
@@ -1132,7 +1136,7 @@ function renderRecs(){
     <td style="font-weight:700;color:#6366f1">NT$${(r.twdTotal||0).toLocaleString()}</td>
     <td>${r.account}</td><td>${r.vendor}</td>
     <td style="font-size:.76rem;color:#64748b">${r.orderId||'-'}</td>
-    <td><div class="ac">${isA?`<button class="ab ae" onclick="editRec('${r.id}')"><i class="fas fa-pen"></i></button><button class="ab ad2" onclick="delRec('${r.id}')"><i class="fas fa-trash"></i></button>`:''}</div></td>
+    <td><div class="ac">${(isA || r.userId === CU.id || !r.userId)?`<button class="ab ae" onclick="editRec('${r.id}')"><i class="fas fa-pen"></i></button><button class="ab ad2" onclick="delRec('${r.id}')"><i class="fas fa-trash"></i></button>`:''}</div></td>
   </tr>`).join('');
   renderPgn(pages);
 }
