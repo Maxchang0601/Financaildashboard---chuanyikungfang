@@ -1235,7 +1235,6 @@ function closeBatch(){document.getElementById('batchMov').classList.remove('on')
 function addBRow(d){
   const date=d||document.getElementById('bDate').value||new Date().toISOString().slice(0,10);
   const tr=document.createElement('tr');
-  const uid='b'+Date.now()+Math.random().toString(36).substr(2,4);
   tr.innerHTML=`
     <td class="cd"><input type="date" class="bd" value="${date}"></td>
     <td class="ct"><select class="bt"><option value="進貨">進貨</option><option value="雜支">雜支</option></select></td>
@@ -1246,11 +1245,11 @@ function addBRow(d){
         <option value="大陸">大陸</option><option value="台灣">台灣</option>
       </select>
     </td>
-    <td class="cq"><input type="number" class="bq" value="1" min="1" oninput="calcBRow(this)" style="width:100%;"></td>
+    <td class="cq"><input type="number" class="bq" value="1" min="1" oninput="calcBRowTotal(this)" style="width:100%;"></td>
     <td class="cr"><input type="number" class="br" value="0" oninput="calcBRow(this)" style="width:100%;"></td>
     <td class="cra"><input type="number" class="bra" value="4.5" oninput="calcBRow(this)" style="width:100%;"></td>
     <td class="ctw"><input type="number" class="btw2" value="0" oninput="calcBRowTotal(this)" style="width:100%;"></td>
-    <td style="width:100px!important;text-align:right;font-family:'DM Mono',monospace;font-size:.78rem;color:#6366f1;font-weight:700;white-space:nowrap;" class="btot">$0</td>
+    <td style="width:100px!important;text-align:right;font-family:'DM Mono',monospace;font-size:.78rem;color:#6366f1;font-weight:700;white-space:nowrap;" class="btot">NT$0</td>
     <td class="ca"><input type="text" class="bac" list="aList" style="width:100%;"></td>
     <td class="cv"><input type="text" class="bv" list="vList" style="width:100%;"></td>
     <td class="cac"><button type="button" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:1rem;" onclick="this.closest('tr').remove()"><i class="fas fa-times"></i></button></td>`;
@@ -1486,6 +1485,12 @@ function calcRPTotal(i) {
   let total=0;
   roPending.forEach(r=>{ total+=Math.round((r.qty||1)*(r.twdPrice||0)*100)/100; });
   document.getElementById('roTotal').textContent = 'NT$'+total.toLocaleString();
+}
+
+function updRP(i, field, val) {
+  roPending[i][field] = (['qty','twdPrice','rmbPrice','rate','salesPrice'].includes(field)) ? parseFloat(val)||0 : val;
+  // Always recalc total when numeric fields change
+  if (['qty','twdPrice'].includes(field)) calcRPTotal(i);
 }
 
 function removeRoPending(i) {
