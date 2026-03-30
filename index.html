@@ -364,7 +364,7 @@
               <div class="pif"><label>帳戶</label><select id="fAcct"><option value="">全部帳戶</option></select></div>
             </div>
             <div class="act-btns">
-              <button id="btnAdd" class="pa pri" onclick="openAddModal()"><i class="fas fa-plus"></i> 新增紀錄</button>
+              <button id="btnAdd" class="pa pri" onclick="openAddModal()"><i class="fas fa-plus"></i> 新增進貨</button>
               <button id="btnBatch" class="pa opri" onclick="openBatchModal()"><i class="fas fa-list-check"></i> 批次新增</button>
               <button id="btnReorder" class="pa osuc" onclick="openReorderModal()"><i class="fas fa-redo"></i> 再次訂貨</button>
               <button class="pa oinf" onclick="exportExcel()"><i class="fas fa-file-excel"></i> 導出 Excel</button>
@@ -514,6 +514,7 @@
           <th class="cd">日期</th><th class="ct">類別</th><th class="cn">品名/摘要</th>
           <th class="cs">銷售定價</th><th class="cso">貨源</th><th class="cq">數量</th>
           <th class="cr">人民幣</th><th class="cra">匯率</th><th class="ctw">台幣單價</th>
+          <th style="width:100px!important;">台幣總價</th>
           <th class="ca">帳戶</th><th class="cv">供應廠商</th><th class="cac"></th>
         </tr></thead>
         <tbody id="bBody"></tbody>
@@ -544,23 +545,24 @@
       </div>
       <!-- 待訂清單表格，固定高度可捲動 -->
       <div style="height:200px;overflow-y:auto;">
-        <table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:800px;">
+        <table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:1000px;">
           <thead style="position:sticky;top:0;z-index:2;">
             <tr style="background:#f1f5f9;">
-              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">品名/摘要</th>
-              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">廠商</th>
+              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;min-width:150px">品名/摘要</th>
+              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">銷售定價</th>
               <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">貨源</th>
               <th style="padding:.4rem .6rem;text-align:center;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">數量</th>
               <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">人民幣</th>
               <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">匯率</th>
               <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">台幣單價</th>
-              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">台幣小計</th>
+              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">台幣總價</th>
               <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">帳戶</th>
+              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">供應商</th>
               <th style="width:36px;border-bottom:1px solid #e2e8f0;"></th>
             </tr>
           </thead>
           <tbody id="roPending">
-            <tr><td colspan="10" style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:.82rem;">從下方選取品項加入</td></tr>
+            <tr><td colspan="11" style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:.82rem;">從下方選取品項加入</td></tr>
           </tbody>
         </table>
       </div>
@@ -1233,19 +1235,58 @@ function closeBatch(){document.getElementById('batchMov').classList.remove('on')
 function addBRow(d){
   const date=d||document.getElementById('bDate').value||new Date().toISOString().slice(0,10);
   const tr=document.createElement('tr');
-  tr.innerHTML=`<td class="cd"><input type="date" class="bd" value="${date}"></td>
+  const uid='b'+Date.now()+Math.random().toString(36).substr(2,4);
+  tr.innerHTML=`
+    <td class="cd"><input type="date" class="bd" value="${date}"></td>
     <td class="ct"><select class="bt"><option value="進貨">進貨</option><option value="雜支">雜支</option></select></td>
     <td class="cn"><textarea class="bn" placeholder="品名/摘要" style="width:100%;resize:none;min-height:34px;padding:.3rem;border:1px solid #cbd5e1;border-radius:.4rem;font-size:.82rem;font-family:'Inter',sans-serif;"></textarea></td>
-    <td class="cs"><input type="number" class="bsp" value="0"></td>
-    <td class="cso"><select class="bso"><option value="大陸">大陸</option><option value="台灣">台灣</option></select></td>
-    <td class="cq"><input type="number" class="bq" value="1" min="1"></td>
-    <td class="cr"><input type="number" class="br" value="0"></td>
-    <td class="cra"><input type="number" class="bra" value="4.5"></td>
-    <td class="ctw"><input type="number" class="btw2" value="0"></td>
-    <td class="ca"><input type="text" class="bac" list="aList"></td>
-    <td class="cv"><input type="text" class="bv" list="vList"></td>
+    <td class="cs"><input type="number" class="bsp" value="0" style="width:100%;"></td>
+    <td class="cso">
+      <select class="bso" onchange="onBRowSrcChange(this)">
+        <option value="大陸">大陸</option><option value="台灣">台灣</option>
+      </select>
+    </td>
+    <td class="cq"><input type="number" class="bq" value="1" min="1" oninput="calcBRow(this)" style="width:100%;"></td>
+    <td class="cr"><input type="number" class="br" value="0" oninput="calcBRow(this)" style="width:100%;"></td>
+    <td class="cra"><input type="number" class="bra" value="4.5" oninput="calcBRow(this)" style="width:100%;"></td>
+    <td class="ctw"><input type="number" class="btw2" value="0" oninput="calcBRowTotal(this)" style="width:100%;"></td>
+    <td style="width:100px!important;text-align:right;font-family:'DM Mono',monospace;font-size:.78rem;color:#6366f1;font-weight:700;white-space:nowrap;" class="btot">$0</td>
+    <td class="ca"><input type="text" class="bac" list="aList" style="width:100%;"></td>
+    <td class="cv"><input type="text" class="bv" list="vList" style="width:100%;"></td>
     <td class="cac"><button type="button" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:1rem;" onclick="this.closest('tr').remove()"><i class="fas fa-times"></i></button></td>`;
   document.getElementById('bBody').appendChild(tr);
+}
+
+function onBRowSrcChange(sel) {
+  const tr = sel.closest('tr');
+  const isCN = sel.value === '大陸';
+  const rmb = tr.querySelector('.br');
+  const rate = tr.querySelector('.bra');
+  rmb.disabled = !isCN;
+  rate.disabled = !isCN;
+  if (!isCN) { rmb.value = 0; rate.value = 0; }
+  rmb.style.background = isCN ? '' : '#e2e8f0';
+  rate.style.background = isCN ? '' : '#e2e8f0';
+  calcBRow(sel);
+}
+
+function calcBRow(el) {
+  const tr = el.closest('tr');
+  const isCN = tr.querySelector('.bso').value === '大陸';
+  const rmb = parseFloat(tr.querySelector('.br').value)||0;
+  const rate = parseFloat(tr.querySelector('.bra').value)||0;
+  if (isCN && rmb > 0 && rate > 0) {
+    tr.querySelector('.btw2').value = Math.round(rmb * rate * 100) / 100;
+  }
+  calcBRowTotal(el);
+}
+
+function calcBRowTotal(el) {
+  const tr = el.closest('tr');
+  const qty = parseFloat(tr.querySelector('.bq').value)||0;
+  const twd = parseFloat(tr.querySelector('.btw2').value)||0;
+  const tot = Math.round(qty * twd * 100) / 100;
+  tr.querySelector('.btot').textContent = 'NT$'+tot.toLocaleString();
 }
 async function saveBatch(){
   const rows=document.querySelectorAll('#bBody tr');let toSave=[];
@@ -1353,51 +1394,57 @@ function toggleRoItem(srcId) {
 function renderRoPending() {
   const tbody = document.getElementById('roPending');
   if (!roPending.length) {
-    tbody.innerHTML = `<tr><td colspan="10" style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:.82rem;">從下方選取品項加入</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:.82rem;">從下方選取品項加入</td></tr>`;
     document.getElementById('roTotal').textContent = '$0';
     document.getElementById('roSelCount').textContent = '0';
     return;
   }
   let total = 0;
+  const iStyle = 'padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;';
   tbody.innerHTML = roPending.map((r,i) => {
     const lineTotal = Math.round((parseFloat(r.qty)||1)*(parseFloat(r.twdPrice)||0)*100)/100;
     total += lineTotal;
+    const isCN = (r.source||'大陸') === '大陸';
     return `<tr style="border-bottom:1px solid #f1f5f9;">
-      <td style="padding:.35rem .6rem;min-width:150px;max-width:200px;">
+      <td style="padding:.35rem .5rem;min-width:150px;max-width:200px;">
         <div style="font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${r.name}">${r.name}</div>
       </td>
-      <td style="padding:.35rem .5rem;">
-        <input type="text" value="${r.vendor||''}" style="width:85px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;"
-          oninput="updRP(${i},'vendor',this.value)">
+      <td style="padding:.35rem .5rem;text-align:right;">
+        <input type="number" value="${r.salesPrice||0}" style="${iStyle}width:75px;text-align:right;"
+          oninput="updRP(${i},'salesPrice',this.value)">
       </td>
       <td style="padding:.35rem .5rem;">
-        <select style="padding:.22rem .3rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;" onchange="updRP(${i},'source',this.value)">
-          <option${r.source==='大陸'?' selected':''}>大陸</option>
-          <option${r.source==='台灣'?' selected':''}>台灣</option>
+        <select style="${iStyle}" onchange="onRPSrcChange(this,${i})">
+          <option${isCN?' selected':''}>大陸</option>
+          <option${!isCN?' selected':''}>台灣</option>
         </select>
       </td>
       <td style="padding:.35rem .5rem;text-align:center;">
-        <input type="number" value="${r.qty||1}" min="1" style="width:55px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;text-align:center;"
-          oninput="updRP(${i},'qty',this.value)">
+        <input type="number" value="${r.qty||1}" min="1" style="${iStyle}width:55px;text-align:center;"
+          oninput="updRP(${i},'qty',this.value);calcRPTotal(${i})">
       </td>
       <td style="padding:.35rem .5rem;text-align:right;">
-        <input type="number" value="${r.rmbPrice||0}" style="width:65px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;text-align:right;"
-          oninput="updRP(${i},'rmbPrice',this.value)">
+        <input type="number" value="${r.rmbPrice||0}" id="ro_rmb_${i}" ${isCN?'':'disabled'} style="${iStyle}width:65px;text-align:right;${isCN?'':'background:#e2e8f0;'}"
+          oninput="calcRPFromRmb(${i})">
       </td>
       <td style="padding:.35rem .5rem;text-align:right;">
-        <input type="number" value="${r.rate||0}" style="width:50px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;text-align:right;"
-          oninput="updRP(${i},'rate',this.value)">
+        <input type="number" value="${r.rate||4.5}" id="ro_rate_${i}" ${isCN?'':'disabled'} style="${iStyle}width:50px;text-align:right;${isCN?'':'background:#e2e8f0;'}"
+          oninput="calcRPFromRmb(${i})">
       </td>
       <td style="padding:.35rem .5rem;text-align:right;">
-        <input type="number" value="${r.twdPrice||0}" style="width:75px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;text-align:right;"
-          oninput="updRP(${i},'twdPrice',this.value)">
+        <input type="number" value="${r.twdPrice||0}" id="ro_twd_${i}" style="${iStyle}width:75px;text-align:right;"
+          oninput="updRP(${i},'twdPrice',this.value);calcRPTotal(${i})">
       </td>
       <td style="padding:.35rem .5rem;text-align:right;font-family:'DM Mono',monospace;font-size:.76rem;color:#6366f1;font-weight:700;white-space:nowrap;" id="rosub_${i}">
         NT$${lineTotal.toLocaleString()}
       </td>
       <td style="padding:.35rem .5rem;">
-        <input type="text" value="${r.account||''}" style="width:70px;padding:.22rem .35rem;border:1px solid #e2e8f0;border-radius:.3rem;font-size:.76rem;"
+        <input type="text" value="${r.account||''}" style="${iStyle}width:70px;"
           oninput="updRP(${i},'account',this.value)">
+      </td>
+      <td style="padding:.35rem .5rem;">
+        <input type="text" value="${r.vendor||''}" style="${iStyle}width:80px;"
+          oninput="updRP(${i},'vendor',this.value)">
       </td>
       <td style="padding:.35rem .5rem;text-align:center;">
         <button onclick="removeRoPending(${i})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:.88rem;"><i class="fas fa-times"></i></button>
@@ -1408,8 +1455,31 @@ function renderRoPending() {
   document.getElementById('roSelCount').textContent = roPending.length;
 }
 
-function updRP(i, field, val) {
-  roPending[i][field] = (field==='qty'||field==='twdPrice'||field==='rmbPrice'||field==='rate') ? parseFloat(val)||0 : val;
+function onRPSrcChange(sel, i) {
+  const isCN = sel.value === '大陸';
+  roPending[i].source = sel.value;
+  const rmb = document.getElementById('ro_rmb_'+i);
+  const rate = document.getElementById('ro_rate_'+i);
+  if (rmb) { rmb.disabled = !isCN; rmb.style.background = isCN?'':'#e2e8f0'; if(!isCN){rmb.value=0;roPending[i].rmbPrice=0;} }
+  if (rate) { rate.disabled = !isCN; rate.style.background = isCN?'':'#e2e8f0'; }
+  calcRPFromRmb(i);
+}
+
+function calcRPFromRmb(i) {
+  const rmb = parseFloat(document.getElementById('ro_rmb_'+i)?.value)||0;
+  const rate = parseFloat(document.getElementById('ro_rate_'+i)?.value)||0;
+  roPending[i].rmbPrice = rmb; roPending[i].rate = rate;
+  if (rmb > 0 && rate > 0 && roPending[i].source === '大陸') {
+    const twd = Math.round(rmb * rate * 100) / 100;
+    roPending[i].twdPrice = twd;
+    const twdEl = document.getElementById('ro_twd_'+i);
+    if(twdEl) twdEl.value = twd;
+  }
+  calcRPTotal(i);
+}
+
+function calcRPTotal(i) {
+  roPending[i].twdPrice = parseFloat(document.getElementById('ro_twd_'+i)?.value)||0;
   const lineTotal = Math.round((roPending[i].qty||1)*(roPending[i].twdPrice||0)*100)/100;
   const sub = document.getElementById('rosub_'+i);
   if(sub) sub.textContent = 'NT$'+lineTotal.toLocaleString();
@@ -1417,8 +1487,6 @@ function updRP(i, field, val) {
   roPending.forEach(r=>{ total+=Math.round((r.qty||1)*(r.twdPrice||0)*100)/100; });
   document.getElementById('roTotal').textContent = 'NT$'+total.toLocaleString();
 }
-
-function updRoPending(i, field, val) { updRP(i, field, val); }
 
 function removeRoPending(i) {
   roPending.splice(i,1);
