@@ -914,7 +914,13 @@ ${prev?`- 上月：營收NT$${prev.rev.toLocaleString()}，損益NT$${prev.pro.t
 請包含：【本月業績摘要】【損益分析】【廣告投放效益】（代操有數據則分析ROI，自投僅費用並請老闆確認）【費用結構說明】【下月行動建議】（3項具體建議）。語氣專業客觀。`;
   rc.innerHTML='<div style="display:flex;align-items:center;gap:8px;color:var(--muted)"><div class="dots"><span></span><span></span><span></span></div> AI 分析中…</div>';
   try{
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,{method:'POST',
+    const modelRes=await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    if(!modelRes.ok) throw new Error('API Key 無效或無法取得 Gemini 模型列表');
+    const modelData=await modelRes.json();
+    const validModel=modelData.models.find(m=>m.supportedGenerationMethods?.includes('generateContent') && m.name.includes('gemini'));
+    if(!validModel) throw new Error('找不到支援的 Gemini 模型');
+    
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/${validModel.name}:generateContent?key=${apiKey}`,{method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
     if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e?.error?.message||`HTTP ${res.status}`);}
