@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>?��?工�? 管�?系統</title>
+<title>傳藝工坊 管理系統</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-/* ?�?� RESET ?�?� */
+/* ── RESET ── */
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
   --ink:#0f0f0f;--paper:#f8f5ef;--cream:#ede8dc;
@@ -22,7 +22,7 @@
   --shadow:0 2px 12px rgba(0,0,0,0.07);
 }
 
-/* ?�?� LOGIN ?�?� */
+/* ── LOGIN ── */
 #loginPage{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:9999;}
 .login-box{background:var(--paper);padding:48px 40px;width:380px;border-top:4px solid var(--accent);}
 .login-box h2{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:4px;}
@@ -35,11 +35,11 @@
 .login-btn:hover{background:#e74c3c;}
 .login-err{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--accent);margin-top:10px;min-height:18px;text-align:center;}
 
-/* ?�?� APP SHELL ?�?� */
+/* ── APP SHELL ── */
 #app{display:none;height:100vh;flex-direction:column;}
 #app.on{display:flex;}
 
-/* ?�?� TOPBAR ?�?� */
+/* ── TOPBAR ── */
 .topbar{background:var(--ink);color:var(--paper);height:52px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--accent);flex-shrink:0;}
 .topbar h1{font-family:'Playfair Display',serif;font-size:1.1rem;}
 .topbar-right{display:flex;align-items:center;gap:12px;}
@@ -49,10 +49,10 @@
 .topbar-btn{font-family:'DM Mono',monospace;font-size:.62rem;padding:4px 12px;border:1px solid var(--muted);background:transparent;color:var(--muted);cursor:pointer;text-transform:uppercase;letter-spacing:.08em;transition:all .2s;}
 .topbar-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-/* ?�?� BODY ?�?� */
+/* ── BODY ── */
 .app-body{display:flex;flex:1;overflow:hidden;}
 
-/* ?�?� LEFTNAV ?�?� */
+/* ── LEFTNAV ── */
 .leftnav{width:200px;min-width:200px;background:var(--cream);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
 .nav-sec{padding:12px 0 4px;}
 .nav-sec-title{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:0 16px 8px;border-bottom:1px solid var(--border);margin-bottom:4px;}
@@ -66,12 +66,12 @@
 .mbtn:hover{border-color:var(--accent);color:var(--accent);}
 .mbtn.active{background:var(--ink);color:white;border-color:var(--ink);}
 
-/* ?�?� PAGES ?�?� */
+/* ── PAGES ── */
 .pages{flex:1;overflow-y:auto;}
 .page{display:none;padding:24px 28px;}
 .page.active{display:block;}
 
-/* ?�?� FINANCIAL ?�?� */
+/* ── FINANCIAL ── */
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
 .kpi{background:var(--card);border:1px solid var(--border);padding:16px 18px;position:relative;overflow:hidden;}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
@@ -153,7 +153,7 @@
 .dots span:nth-child(2){animation-delay:.2s;}.dots span:nth-child(3){animation-delay:.4s;}
 @keyframes bop{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-5px);}}
 
-/* ?�?� PURCHASE ?�?� */
+/* ── PURCHASE ── */
 .pur-page{font-family:'Inter',sans-serif;}
 .pur-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
 .pur-logo{display:flex;align-items:center;gap:.8rem;}
@@ -253,11 +253,11 @@
 <!-- LOGIN -->
 <div id="loginPage">
   <div class="login-box">
-    <h2>?��?工�?</h2>
-    <p class="sub">管�?系統 · Management System</p>
+    <h2>傳藝工坊</h2>
+    <p class="sub">管理系統 · Management System</p>
     <div class="lf"><label>Email</label><input type="email" id="lEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <div class="lf"><label>密碼</label><input type="password" id="lPw" placeholder="?�••••••�? onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <button class="login-btn" onclick="doLogin()">?�入</button>
+    <div class="lf"><label>密碼</label><input type="password" id="lPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="login-btn" onclick="doLogin()">登入</button>
     <div class="login-err" id="lErr"></div>
   </div>
 </div>
@@ -265,13 +265,13 @@
 <!-- APP -->
 <div id="app">
   <div class="topbar">
-    <h1>?��?工�? 管�?系統</h1>
+    <h1>傳藝工坊 管理系統</h1>
     <div class="topbar-right">
-      <span class="badge-year" id="topBadge">??/span>
+      <span class="badge-year" id="topBadge">—</span>
       <span class="user-email" id="uEmail"></span>
       <span class="role-tag" id="uRole"></span>
-      <button class="topbar-btn" id="editDataBtn" onclick="openEditPanel()" style="display:none">??編輯資�?</button>
-      <button class="topbar-btn" onclick="doLogout()">?�出</button>
+      <button class="topbar-btn" id="editDataBtn" onclick="openEditPanel()" style="display:none">✏ 編輯資料</button>
+      <button class="topbar-btn" onclick="doLogout()">登出</button>
     </div>
   </div>
 
@@ -279,9 +279,9 @@
     <!-- Left Nav -->
     <nav class="leftnav">
       <div class="nav-sec">
-        <div class="nav-sec-title">?�能?�單</div>
-        <div class="nav-item active" id="nv-fin" onclick="goModule('fin')"><i class="fas fa-chart-line"></i> 財�??��?</div>
-        <div class="nav-item" id="nv-pur" onclick="goModule('pur')"><i class="fas fa-boxes-packing"></i> ?�貨管�?</div>
+        <div class="nav-sec-title">功能選單</div>
+        <div class="nav-item active" id="nv-fin" onclick="goModule('fin')"><i class="fas fa-chart-line"></i> 財務分析</div>
+        <div class="nav-item" id="nv-pur" onclick="goModule('pur')"><i class="fas fa-boxes-packing"></i> 進貨管理</div>
       </div>
       <div id="finNav">
         <div class="nav-sec">
@@ -289,7 +289,7 @@
           <select class="year-select" id="yrSel" onchange="changeYear(this.value)"></select>
         </div>
         <div class="nav-sec">
-          <div class="nav-sec-title">?�份</div>
+          <div class="nav-sec-title">月份</div>
           <div class="month-grid" id="mGrid"></div>
         </div>
       </div>
@@ -301,40 +301,40 @@
       <!-- FINANCIAL PAGE -->
       <div class="page active" id="pg-fin">
         <div class="kpi-row">
-          <div class="kpi r"><div class="kpi-label">?��??�收</div><div class="kpi-val" id="kv-rev">??/div><div class="kpi-chg" id="kc-rev"></div></div>
-          <div class="kpi p"><div class="kpi-label">?��??��?</div><div class="kpi-val" id="kv-pro">??/div><div class="kpi-chg" id="kc-pro"></div></div>
-          <div class="kpi m"><div class="kpi-label">淨利??/div><div class="kpi-val" id="kv-mar">??/div><div class="kpi-chg" id="kc-mar"></div></div>
-          <div class="kpi a"><div class="kpi-label">�??費�?�?/div><div class="kpi-val" id="kv-ads">??/div><div class="kpi-chg" id="kc-ads"></div></div>
+          <div class="kpi r"><div class="kpi-label">本月營收</div><div class="kpi-val" id="kv-rev">—</div><div class="kpi-chg" id="kc-rev"></div></div>
+          <div class="kpi p"><div class="kpi-label">本期損益</div><div class="kpi-val" id="kv-pro">—</div><div class="kpi-chg" id="kc-pro"></div></div>
+          <div class="kpi m"><div class="kpi-label">淨利率</div><div class="kpi-val" id="kv-mar">—</div><div class="kpi-chg" id="kc-mar"></div></div>
+          <div class="kpi a"><div class="kpi-label">廣告費合計</div><div class="kpi-val" id="kv-ads">—</div><div class="kpi-chg" id="kc-ads"></div></div>
         </div>
         <div class="cg1">
-          <div class="chart-card"><h4>?�收 &amp; ?��? &amp; �??費趨??/h4><div style="position:relative;height:210px"><canvas id="cTrend"></canvas></div></div>
-          <div class="chart-card"><h4>費用結�?佔�?</h4><div style="position:relative;height:210px"><canvas id="cPie"></canvas></div></div>
+          <div class="chart-card"><h4>營收 &amp; 損益 &amp; 廣告費趨勢</h4><div style="position:relative;height:210px"><canvas id="cTrend"></canvas></div></div>
+          <div class="chart-card"><h4>費用結構佔比</h4><div style="position:relative;height:210px"><canvas id="cPie"></canvas></div></div>
         </div>
         <div class="cg2">
-          <div class="chart-card"><h4>�??費趨?��?三管?��?</h4><div style="position:relative;height:175px"><canvas id="cAd"></canvas></div></div>
-          <div class="chart-card"><h4>淨利?�走??/h4><div style="position:relative;height:175px"><canvas id="cMar"></canvas></div></div>
+          <div class="chart-card"><h4>廣告費趨勢（三管道）</h4><div style="position:relative;height:175px"><canvas id="cAd"></canvas></div></div>
+          <div class="chart-card"><h4>淨利率走勢</h4><div style="position:relative;height:175px"><canvas id="cMar"></canvas></div></div>
         </div>
-        <div class="sdiv">�?? ROI ?��?</div>
+        <div class="sdiv">廣告 ROI 分析</div>
         <div class="chart-card" style="margin-bottom:14px;">
-          <h4>�??管�?績�?</h4>
-          <table class="ftbl"><thead><tr><th>管�?</th><th>?�入費用</th><th>帶�??�收</th><th>ROI</th><th>費用??/th></tr></thead><tbody id="adsTbl"></tbody></table>
+          <h4>廣告管道績效</h4>
+          <table class="ftbl"><thead><tr><th>管道</th><th>投入費用</th><th>帶回營收</th><th>ROI</th><th>費用率</th></tr></thead><tbody id="adsTbl"></tbody></table>
         </div>
-        <div class="sdiv">費用?��???/div>
+        <div class="sdiv">費用率分析</div>
         <div class="chart-card" style="margin-bottom:14px;">
-          <h4>?�費?��??�收�?/h4>
-          <table class="ftbl"><thead><tr><th>費用?�目</th><th>?��?</th><th>佔�??��?</th><th>視覺??/th></tr></thead><tbody id="expTbl"></tbody></table>
+          <h4>各費用佔營收比</h4>
+          <table class="ftbl"><thead><tr><th>費用項目</th><th>金額</th><th>佔營收比</th><th>視覺化</th></tr></thead><tbody id="expTbl"></tbody></table>
         </div>
-        <div class="sdiv">?��??��?</div>
+        <div class="sdiv">分析報告</div>
         <div class="ai-box">
           <div class="ai-hdr">
-            <h3>財�??��??��?</h3>
+            <h3>財務分析報告</h3>
             <div class="ai-hdr-btns">
-              <button class="sbtn muted" id="editRptBtn" onclick="toggleEditRpt()" style="display:none">??編輯</button>
-              <button class="sbtn grn" id="saveRptBtn" onclick="saveRptEdit()" style="display:none">???��?</button>
-              <button class="sbtn dark" onclick="exportPDF()">�??�出PDF</button>
+              <button class="sbtn muted" id="editRptBtn" onclick="toggleEditRpt()" style="display:none">✏ 編輯</button>
+              <button class="sbtn grn" id="saveRptBtn" onclick="saveRptEdit()" style="display:none">✓ 儲存</button>
+              <button class="sbtn dark" onclick="exportPDF()">⬇ 匯出PDF</button>
             </div>
           </div>
-          <div class="ai-content" id="aiContent"><p style="color:var(--muted);font-style:italic;">尚無?��??��??�管?�者可點右上�??�編輯�??�」�??�產??AI ?��??��?/p></div>
+          <div class="ai-content" id="aiContent"><p style="color:var(--muted);font-style:italic;">尚無分析報告。管理者可點右上角「編輯資料」→「產生 AI 報告」。</p></div>
         </div>
       </div>
 
@@ -342,31 +342,31 @@
       <div class="page" id="pg-pur">
         <div class="pur-page">
           <div class="pur-hdr">
-            <div class="pur-logo"><i class="fas fa-boxes-packing"></i><h2>?�貨管�?系統</h2></div>
-            <div class="pur-stat"><span class="sl">?��?總�?</span><span class="sv" id="monTotal">$0</span></div>
+            <div class="pur-logo"><i class="fas fa-boxes-packing"></i><h2>進貨管理系統</h2></div>
+            <div class="pur-stat"><span class="sl">本月總額</span><span class="sv" id="monTotal">$0</span></div>
           </div>
           <section class="ctrl-card glass">
             <div class="filter-grp">
               <div class="pif">
-                <label>?��?篩選</label>
+                <label>日期篩選</label>
                 <div class="qf" id="qdf">
-                  <button class="pill" data-r="thisMonth">?��?</button>
-                  <button class="pill" data-r="lastMonth">上�?</button>
+                  <button class="pill" data-r="thisMonth">本月</button>
+                  <button class="pill" data-r="lastMonth">上月</button>
                   <button class="pill" data-r="thisYear">今年</button>
-                  <button class="pill" data-r="all">?�部</button>
-                  <button class="pill outline" id="custBtn">?��? <i class="fas fa-chevron-down"></i></button>
+                  <button class="pill" data-r="all">全部</button>
+                  <button class="pill outline" id="custBtn">自訂 <i class="fas fa-chevron-down"></i></button>
                 </div>
                 <div class="range-inp" id="custRange" style="display:none">
-                  <input type="date" id="fStart"><span>??/span><input type="date" id="fEnd">
+                  <input type="date" id="fStart"><span>至</span><input type="date" id="fEnd">
                 </div>
               </div>
-              <div class="pif"><label>供�?廠�?</label><select id="fVendor"><option value="">?�部廠�?</option></select></div>
-              <div class="pif"><label>帳戶</label><select id="fAcct"><option value="">?�部帳戶</option></select></div>
+              <div class="pif"><label>供應廠商</label><select id="fVendor"><option value="">全部廠商</option></select></div>
+              <div class="pif"><label>帳戶</label><select id="fAcct"><option value="">全部帳戶</option></select></div>
             </div>
             <div class="act-btns">
-              <button id="btnAdd" class="pa pri" onclick="openAddModal()"><i class="fas fa-plus"></i> ?��??�貨</button>
-              <button id="btnBatch" class="pa opri" onclick="openBatchModal()"><i class="fas fa-list-check"></i> ?�次?��?</button>
-              <button id="btnReorder" class="pa osuc" onclick="openReorderModal()"><i class="fas fa-redo"></i> ?�次訂貨</button>
+              <button id="btnAdd" class="pa pri" onclick="openAddModal()"><i class="fas fa-plus"></i> 新增進貨</button>
+              <button id="btnBatch" class="pa opri" onclick="openBatchModal()"><i class="fas fa-list-check"></i> 批次新增</button>
+              <button id="btnReorder" class="pa osuc" onclick="openReorderModal()"><i class="fas fa-redo"></i> 再次訂貨</button>
               <button class="pa oinf" onclick="exportExcel()"><i class="fas fa-file-excel"></i> 導出 Excel</button>
               <button id="btnImport" class="pa suc" onclick="document.getElementById('impFile').click()"><i class="fas fa-file-import"></i> 導入 Excel</button>
               <input type="file" id="impFile" accept=".xlsx,.xls" style="display:none" onchange="handleImport(this)">
@@ -375,24 +375,24 @@
           <section class="glass">
             <div class="tbl-hdr">
               <div class="tbl-hdr-l">
-                <h3 style="font-size:1rem;font-weight:700;">紀?��???/h3>
-                <button id="btnDelSel" class="pa odgr" onclick="delSelected()"><i class="fas fa-trash-can"></i> ?�除?�??/button>
+                <h3 style="font-size:1rem;font-weight:700;">紀錄清單</h3>
+                <button id="btnDelSel" class="pa odgr" onclick="delSelected()"><i class="fas fa-trash-can"></i> 刪除所選</button>
               </div>
               <div class="tbl-hdr-r">
                 <div class="id-del">
-                  <input type="text" id="delIdInp" placeholder="輸入?��??�單?�除...">
+                  <input type="text" id="delIdInp" placeholder="輸入單號整單刪除...">
                   <button class="id-del-btn" onclick="delById()"><i class="fas fa-eraser"></i></button>
                 </div>
-                <div class="srch"><i class="fas fa-search"></i><input type="text" id="srchInp" placeholder="?��??��?..."></div>
+                <div class="srch"><i class="fas fa-search"></i><input type="text" id="srchInp" placeholder="搜尋品名..."></div>
               </div>
             </div>
             <div class="tw">
               <table id="recTbl">
                 <thead><tr>
                   <th width="40"><input type="checkbox" id="selAll" onclick="toggleSelAll()"></th>
-                  <th>?��?</th><th>類別</th><th>?��?/?��?</th><th>?�售定價</th>
-                  <th>貨�?</th><th>?��?</th><th>人�?�?/th><th>?��?</th>
-                  <th>?�幣總�?</th><th>帳戶</th><th>供�?廠�?</th><th>?��?</th><th>?��?</th>
+                  <th>日期</th><th>類別</th><th>品名/摘要</th><th>銷售定價</th>
+                  <th>貨源</th><th>數量</th><th>人民幣</th><th>匯率</th>
+                  <th>台幣總額</th><th>帳戶</th><th>供應廠商</th><th>單號</th><th>操作</th>
                 </tr></thead>
                 <tbody id="recBody"></tbody>
               </table>
@@ -410,91 +410,91 @@
 <div class="modal-bg" id="editBg" onclick="if(event.target===this)closeEditPanel()">
   <div class="edit-panel">
     <div class="edit-panel-hdr">
-      <h3>編輯資�?</h3>
-      <button class="sbtn muted" onclick="closeEditPanel()">???��?</button>
+      <h3>編輯資料</h3>
+      <button class="sbtn muted" onclick="closeEditPanel()">✕ 關閉</button>
     </div>
 
-    <div class="ep-sec"><h4>上傳 PDF ?��?�?/h4>
+    <div class="ep-sec"><h4>上傳 PDF 損益表</h4>
       <div class="upload-zone" onclick="document.getElementById('pdfInp').click()">
-        <div class="icon">??</div><p>點�??��??��???PDF</p>
+        <div class="icon">📄</div><p>點擊或拖曳上傳 PDF</p>
         <input type="file" id="pdfInp" accept=".pdf" style="display:none" onchange="handlePDF(this)">
       </div>
       <div class="pdf-st" id="pdfSt"></div>
     </div>
 
-    <div class="ep-sec"><h4>?��?帶入（PDF �??�?/h4>
-      <div class="fg"><label>?�收 4100</label><input type="number" id="i_rev" class="ro" readonly oninput="schedUpd()"></div>
-      <div class="fg"><label>?��??��?</label><input type="number" id="i_pro" class="ro" readonly oninput="schedUpd()"></div>
-      <div class="fg"><label>?�費 5214+5216+5217</label><input type="number" id="i_shi" class="ro" readonly oninput="schedUpd()"></div>
-      <div class="fg"><label>?��?�??�?5225</label><input type="number" id="i_adt" class="ro" readonly oninput="schedUpd()"></div>
-      <div class="fg"><label>稅�? 5222</label><input type="number" id="i_tax" class="ro" readonly oninput="schedUpd()"></div>
+    <div class="ep-sec"><h4>自動帶入（PDF 解析）</h4>
+      <div class="fg"><label>營收 4100</label><input type="number" id="i_rev" class="ro" readonly oninput="schedUpd()"></div>
+      <div class="fg"><label>本期損益</label><input type="number" id="i_pro" class="ro" readonly oninput="schedUpd()"></div>
+      <div class="fg"><label>運費 5214+5216+5217</label><input type="number" id="i_shi" class="ro" readonly oninput="schedUpd()"></div>
+      <div class="fg"><label>其他廣告費 5225</label><input type="number" id="i_adt" class="ro" readonly oninput="schedUpd()"></div>
+      <div class="fg"><label>稅務 5222</label><input type="number" id="i_tax" class="ro" readonly oninput="schedUpd()"></div>
     </div>
 
-    <div class="ep-sec"><h4>?��?輸入</h4>
-      <div class="fg"><label>一次性費??/label><input type="number" id="i_one" placeholder="?��?輸入" oninput="schedUpd()"></div>
-      <div class="fg"><label>?�末存貨</label><input type="number" id="i_inv" placeholder="?��?輸入" oninput="schedUpd()"></div>
+    <div class="ep-sec"><h4>手動輸入</h4>
+      <div class="fg"><label>一次性費用</label><input type="number" id="i_one" placeholder="手動輸入" oninput="schedUpd()"></div>
+      <div class="fg"><label>期末存貨</label><input type="number" id="i_inv" placeholder="手動輸入" oninput="schedUpd()"></div>
     </div>
 
-    <div class="ep-sec"><h4>�??費�?�?/h4>
-      <div class="ad-lbl">�??�??</div>
-      <div class="fg"><label>?��? 5234（自?��?</label><input type="number" id="i_adc" class="ro" readonly oninput="schedUpd()"></div>
+    <div class="ep-sec"><h4>廣告費明細</h4>
+      <div class="ad-lbl">代操廣告</div>
+      <div class="fg"><label>商線 5234（自動）</label><input type="number" id="i_adc" class="ro" readonly oninput="schedUpd()"></div>
       <div class="ad-row">
-        <div class="fg"><label>�??FB費用</label><input type="number" id="i_afbc" placeholder="?��?" oninput="schedUpd()"></div>
-        <div class="fg"><label>帶�?</label><input type="number" id="i_afbr" placeholder="?��?" oninput="schedUpd()"></div>
+        <div class="fg"><label>代操FB費用</label><input type="number" id="i_afbc" placeholder="手動" oninput="schedUpd()"></div>
+        <div class="fg"><label>帶回</label><input type="number" id="i_afbr" placeholder="手動" oninput="schedUpd()"></div>
       </div>
       <div class="ad-row">
-        <div class="fg"><label>�??Google費用</label><input type="number" id="i_agc" placeholder="?��?" oninput="schedUpd()"></div>
-        <div class="fg"><label>帶�?</label><input type="number" id="i_agr" placeholder="?��?" oninput="schedUpd()"></div>
+        <div class="fg"><label>代操Google費用</label><input type="number" id="i_agc" placeholder="手動" oninput="schedUpd()"></div>
+        <div class="fg"><label>帶回</label><input type="number" id="i_agr" placeholder="手動" oninput="schedUpd()"></div>
       </div>
-      <div class="ad-lbl" style="margin-top:6px">?��?�??</div>
-      <div class="fg"><label>FB 5235（自?��?</label><input type="number" id="i_fb" class="ro" readonly oninput="schedUpd()"></div>
-      <div class="fg"><label>FB 帶�?</label><input type="number" id="i_fbr" placeholder="?��?" oninput="schedUpd()"></div>
-      <div class="fg"><label>Google 5236（自?��?</label><input type="number" id="i_gg" class="ro" readonly oninput="schedUpd()"></div>
-      <div class="fg"><label>Google 帶�?</label><input type="number" id="i_ggr" placeholder="?��?" oninput="schedUpd()"></div>
+      <div class="ad-lbl" style="margin-top:6px">自投廣告</div>
+      <div class="fg"><label>FB 5235（自動）</label><input type="number" id="i_fb" class="ro" readonly oninput="schedUpd()"></div>
+      <div class="fg"><label>FB 帶回</label><input type="number" id="i_fbr" placeholder="手動" oninput="schedUpd()"></div>
+      <div class="fg"><label>Google 5236（自動）</label><input type="number" id="i_gg" class="ro" readonly oninput="schedUpd()"></div>
+      <div class="fg"><label>Google 帶回</label><input type="number" id="i_ggr" placeholder="手動" oninput="schedUpd()"></div>
     </div>
 
-    <div class="ep-sec"><h4>AI ?��??��?</h4>
+    <div class="ep-sec"><h4>AI 分析報告</h4>
       <div class="fg"><label>Anthropic API Key</label>
         <div class="apikey-wrap">
           <input type="text" id="i_key" placeholder="sk-ant-..." oninput="chkKey(this)" onpaste="setTimeout(()=>chkKey(this),10)">
           <span class="ak-st" id="akSt"></span>
         </div>
       </div>
-      <button class="ep-btn2" onclick="genReport()">?? ?��? AI ?��??��?</button>
+      <button class="ep-btn2" onclick="genReport()">🤖 產生 AI 分析報告</button>
     </div>
 
-    <button class="ep-btn" onclick="saveMonth()">?�� ?��?並�?步雲�?/button>
+    <button class="ep-btn" onclick="saveMonth()">💾 儲存並同步雲端</button>
     <div class="cloud-st" id="cloudSt"></div>
-    <button class="ep-btn2" onclick="exportJSON()">?�� ?�出?��??�份</button>
-    <button class="ep-btn2" onclick="document.getElementById('jsonInp').click()">?? 載入?��??�份<input type="file" id="jsonInp" accept=".json" style="display:none" onchange="importJSON(this)"></button>
+    <button class="ep-btn2" onclick="exportJSON()">📥 匯出本機備份</button>
+    <button class="ep-btn2" onclick="document.getElementById('jsonInp').click()">📂 載入本機備份<input type="file" id="jsonInp" accept=".json" style="display:none" onchange="importJSON(this)"></button>
   </div>
 </div>
 
 <!-- Purchase Add Modal -->
 <div class="modal-ov" id="addMov">
   <div class="modal">
-    <div class="mhdr"><h2 id="addTitle">?��?紀??/h2><button class="cls" onclick="closeAddModal()">&times;</button></div>
+    <div class="mhdr"><h2 id="addTitle">新增紀錄</h2><button class="cls" onclick="closeAddModal()">&times;</button></div>
     <form class="mbody" id="addForm" onsubmit="saveRec(event)">
       <input type="hidden" id="recId">
       <div class="fgrid">
         <div class="fg2 fw"><label>類別</label>
           <div class="tg">
-            <input type="radio" id="tPur" name="rtype" value="?�貨" checked><label for="tPur">?�貨</label>
-            <input type="radio" id="tMisc" name="rtype" value="?�支"><label for="tMisc">?�支</label>
+            <input type="radio" id="tPur" name="rtype" value="進貨" checked><label for="tPur">進貨</label>
+            <input type="radio" id="tMisc" name="rtype" value="雜支"><label for="tMisc">雜支</label>
           </div></div>
-        <div class="fg2"><label>?��?</label><input type="date" id="rDate" required></div>
-        <div class="fg2"><label>供�?廠�?</label><input type="text" id="rVendor" list="vList" required><datalist id="vList"></datalist></div>
-        <div class="fg2 fw"><label>?��?/?��?</label><input type="text" id="rName" required></div>
-        <div class="fg2"><label>?�售定價(?�幣)</label><input type="number" id="rSP" value="0"></div>
-        <div class="fg2"><label>貨�?</label><select id="rSrc"><option value="大陸">大陸</option><option value="?�灣">?�灣</option></select></div>
-        <div class="fg2"><label>?�貨?��?</label><input type="number" id="rQty" value="1" min="1" required></div>
-        <div class="fg2" id="rmbF"><label>人�?�?��??/label><input type="number" id="rRmb" value="0"></div>
-        <div class="fg2" id="ratF"><label>市場?��?</label><input type="number" id="rRate" value="4.5"></div>
-        <div class="fg2"><label>?�幣?�價</label><input type="number" id="rTwd" value="0"></div>
+        <div class="fg2"><label>日期</label><input type="date" id="rDate" required></div>
+        <div class="fg2"><label>供應廠商</label><input type="text" id="rVendor" list="vList" required><datalist id="vList"></datalist></div>
+        <div class="fg2 fw"><label>品名/摘要</label><input type="text" id="rName" required></div>
+        <div class="fg2"><label>銷售定價(台幣)</label><input type="number" id="rSP" value="0"></div>
+        <div class="fg2"><label>貨源</label><select id="rSrc"><option value="大陸">大陸</option><option value="台灣">台灣</option></select></div>
+        <div class="fg2"><label>進貨數量</label><input type="number" id="rQty" value="1" min="1" required></div>
+        <div class="fg2" id="rmbF"><label>人民幣單價</label><input type="number" id="rRmb" value="0"></div>
+        <div class="fg2" id="ratF"><label>市場匯率</label><input type="number" id="rRate" value="4.5"></div>
+        <div class="fg2"><label>台幣單價</label><input type="number" id="rTwd" value="0"></div>
         <div class="fg2"><label>付款帳戶</label><input type="text" id="rAcct" list="aList" required><datalist id="aList"></datalist></div>
-        <div class="fg2 fw"><label>?�估總�?�??�幣)</label><div id="totDisp" class="tot-disp">$ 0</div></div>
+        <div class="fg2 fw"><label>預估總金額(台幣)</label><div id="totDisp" class="tot-disp">$ 0</div></div>
       </div>
-      <div class="mftr"><button type="button" class="mbtn2 txt" onclick="closeAddModal()">?��?</button><button type="submit" class="mbtn2 pri">?��?紀??/button></div>
+      <div class="mftr"><button type="button" class="mbtn2 txt" onclick="closeAddModal()">取消</button><button type="submit" class="mbtn2 pri">儲存紀錄</button></div>
     </form>
   </div>
 </div>
@@ -502,26 +502,26 @@
 <!-- Batch Modal -->
 <div class="modal-ov" id="batchMov">
   <div class="modal batch-modal" style="background:white;border-radius:1.25rem;">
-    <div class="mhdr"><h2>?�次?��?</h2><button class="cls" onclick="closeBatch()">&times;</button></div>
+    <div class="mhdr"><h2>批次新增</h2><button class="cls" onclick="closeBatch()">&times;</button></div>
     <div class="mbody">
       <div class="bhc">
-        <label style="font-weight:700;white-space:nowrap">套用?�次?��?</label>
+        <label style="font-weight:700;white-space:nowrap">套用批次日期</label>
         <input type="date" id="bDate" style="width:200px;">
-        <span style="font-size:.8rem;color:#64748b;font-style:italic;">?��?後�?步�??�到?�?��?</span>
+        <span style="font-size:.8rem;color:#64748b;font-style:italic;">選取後同步套用到所有列</span>
       </div>
       <div class="btw"><table id="bTbl">
         <thead><tr>
-          <th class="cd">?��?</th><th class="ct">類別</th><th class="cn">?��?/?��?</th>
-          <th class="cs">?�售定價</th><th class="cso">貨�?</th><th class="cq">?��?</th>
-          <th class="cr">人�?�?/th><th class="cra">?��?</th><th class="ctw">?�幣?�價</th>
-          <th style="width:100px!important;">?�幣總價</th>
-          <th class="ca">帳戶</th><th class="cv">供�?廠�?</th><th class="cac"></th>
+          <th class="cd">日期</th><th class="ct">類別</th><th class="cn">品名/摘要</th>
+          <th class="cs">銷售定價</th><th class="cso">貨源</th><th class="cq">數量</th>
+          <th class="cr">人民幣</th><th class="cra">匯率</th><th class="ctw">台幣單價</th>
+          <th style="width:100px!important;">台幣總價</th>
+          <th class="ca">帳戶</th><th class="cv">供應廠商</th><th class="cac"></th>
         </tr></thead>
         <tbody id="bBody"></tbody>
       </table></div>
-      <button class="mbtn2 txt" style="margin-top:.75rem" onclick="addBRow()"><i class="fas fa-plus-circle"></i> 增�?一�?/button>
+      <button class="mbtn2 txt" style="margin-top:.75rem" onclick="addBRow()"><i class="fas fa-plus-circle"></i> 增加一行</button>
     </div>
-    <div class="mftr"><button class="mbtn2 txt" onclick="closeBatch()">?��?</button><button class="mbtn2 pri" onclick="saveBatch()">?�部?��?</button></div>
+    <div class="mftr"><button class="mbtn2 txt" onclick="closeBatch()">取消</button><button class="mbtn2 pri" onclick="saveBatch()">全部儲存</button></div>
   </div>
 </div>
 
@@ -529,103 +529,103 @@
 <div class="modal-ov" id="reorderMov">
   <div class="modal" style="max-width:1100px;width:96%;height:85vh;display:flex;flex-direction:column;overflow:hidden;">
     <div class="mhdr" style="flex-shrink:0;">
-      <h2>?? ?�次訂貨</h2>
+      <h2>🔄 再次訂貨</h2>
       <button class="cls" onclick="closeReorder()">&times;</button>
     </div>
 
-    <!-- 上�?：�?訂�??��??��?高度�?-->
+    <!-- 上半：待訂清單（固定高度） -->
     <div style="flex-shrink:0;border-bottom:2px solid #e2e8f0;background:#f8fafc;">
       <div style="padding:.5rem 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e8f0;">
-        <span style="font-weight:700;font-size:.88rem;">?? 待�?清單 <span id="roSelCount" style="color:#6366f1;font-family:'DM Mono',monospace;">0</span> ??/span>
+        <span style="font-weight:700;font-size:.88rem;">📋 待訂清單 <span id="roSelCount" style="color:#6366f1;font-family:'DM Mono',monospace;">0</span> 項</span>
         <div style="display:flex;align-items:center;gap:.6rem;">
-          <label style="font-size:.78rem;color:#64748b;">訂貨?��?</label>
+          <label style="font-size:.78rem;color:#64748b;">訂貨日期</label>
           <input type="date" id="roDate" style="padding:.28rem .6rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:.8rem;outline:none;">
-          <span style="font-family:'DM Mono',monospace;font-size:.8rem;color:#6366f1;font-weight:700;">?��?�?span id="roTotal">$0</span></span>
+          <span style="font-family:'DM Mono',monospace;font-size:.8rem;color:#6366f1;font-weight:700;">合計：<span id="roTotal">$0</span></span>
         </div>
       </div>
-      <!-- 待�?清單表格，固定�?度可?��? -->
+      <!-- 待訂清單表格，固定高度可捲動 -->
       <div style="height:200px;overflow-y:auto;">
         <table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:1000px;">
           <thead style="position:sticky;top:0;z-index:2;">
             <tr style="background:#f1f5f9;">
-              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;min-width:150px">?��?/?��?</th>
-              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">?�售定價</th>
-              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">貨�?</th>
-              <th style="padding:.4rem .6rem;text-align:center;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">?��?</th>
-              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">人�?�?/th>
-              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">?��?</th>
-              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">?�幣?�價</th>
-              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">?�幣總價</th>
+              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;min-width:150px">品名/摘要</th>
+              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">銷售定價</th>
+              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">貨源</th>
+              <th style="padding:.4rem .6rem;text-align:center;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">數量</th>
+              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">人民幣</th>
+              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">匯率</th>
+              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">台幣單價</th>
+              <th style="padding:.4rem .6rem;text-align:right;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">台幣總價</th>
               <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">帳戶</th>
-              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">供�???/th>
+              <th style="padding:.4rem .6rem;text-align:left;font-size:.68rem;font-weight:700;color:#64748b;text-transform:uppercase;white-space:nowrap;border-bottom:1px solid #e2e8f0;">供應商</th>
               <th style="width:36px;border-bottom:1px solid #e2e8f0;"></th>
             </tr>
           </thead>
           <tbody id="roPending">
-            <tr><td colspan="11" style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:.82rem;">從�??�選?��??��???/td></tr>
+            <tr><td colspan="11" style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:.82rem;">從下方選取品項加入</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- 下�?：�?尋選?��?（自?�填滿剩餘空?��? -->
+    <!-- 下半：搜尋選取區（自動填滿剩餘空間） -->
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
       <div style="padding:.6rem 1rem;border-bottom:1px solid #e2e8f0;flex-shrink:0;display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;">
         <div style="position:relative;flex:1;min-width:180px;">
           <i class="fas fa-search" style="position:absolute;left:.7rem;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.82rem;"></i>
-          <input type="text" id="roSrch" placeholder="?��??��??��???.."
+          <input type="text" id="roSrch" placeholder="搜尋品名、廠商..."
             style="width:100%;padding:.45rem .8rem .45rem 2.2rem;border:1px solid #cbd5e1;border-radius:.6rem;font-size:.85rem;outline:none;"
             oninput="renderRoList()">
         </div>
         <div style="display:flex;gap:.3rem;flex-wrap:wrap;" id="roVenFilter">
-          <button class="pill on" data-v="" onclick="setRoVen(this,'')">?�部</button>
+          <button class="pill on" data-v="" onclick="setRoVen(this,'')">全部</button>
         </div>
       </div>
-      <!-- 歷史?��??�表 -->
+      <!-- 歷史品項列表 -->
       <div style="overflow-y:auto;flex:1;" id="roList"></div>
     </div>
 
     <div class="mftr" style="flex-shrink:0;">
-      <button class="mbtn2 txt" onclick="closeReorder()">?��?</button>
-      <button class="mbtn2 pri" onclick="submitReorder()">??確�??�出</button>
+      <button class="mbtn2 txt" onclick="closeReorder()">取消</button>
+      <button class="mbtn2 pri" onclick="submitReorder()">✓ 確認送出</button>
     </div>
   </div>
 </div>
 
 <script>
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
+// ══════════════════════════════════════
 // SUPABASE INIT
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
+// ══════════════════════════════════════
 const SB_URL = 'https://ezugnxnybwzqwyruxthj.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6dWdueG55Ynd6cXd5cnV4dGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0ODkyMzUsImV4cCI6MjA5MDA2NTIzNX0.-kC2KX9PjTXyOUWZSlZB_OewoPWQdRZioET16si_818';
 const sb = supabase.createClient(SB_URL, SB_KEY);
 
 let CU = null, ROLE = 'viewer', APP_READY = false;
 
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
+// ══════════════════════════════════════
 // AUTH
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
+// ══════════════════════════════════════
 async function doLogin() {
   const email = document.getElementById('lEmail').value.trim();
   const pw = document.getElementById('lPw').value;
   const err = document.getElementById('lErr');
-  err.textContent = '?�入中�?;
+  err.textContent = '登入中…';
   try {
     const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
     if (error) {
-      err.textContent = '??' + (error.message.includes('Invalid') ? '帳�??��?碼錯�? : error.message);
+      err.textContent = '⚠ ' + (error.message.includes('Invalid') ? '帳號或密碼錯誤' : error.message);
       return;
     }
     CU = data.user;
     // Fetch role with detailed error logging
     const { data: rd, error: re } = await sb.from('user_roles').select('role').eq('user_id', CU.id).maybeSingle();
-    console.log('Role query ??data:', rd, ' error:', re);
+    console.log('Role query → data:', rd, ' error:', re);
     if (re) console.error('Role error detail:', re.code, re.message, re.details);
     ROLE = rd?.role || 'viewer';
     console.log('Login OK | role:', ROLE, '| uid:', CU.id);
     showApp();
   } catch(e) {
-    err.textContent = '??????�誤�? + e.message;
+    err.textContent = '⚠ 連線錯誤：' + e.message;
     console.error('Login error:', e);
   }
 }
@@ -655,14 +655,14 @@ function showApp() {
   document.getElementById('app').classList.add('on');
   document.getElementById('uEmail').textContent = CU.email;
   document.getElementById('uRole').textContent = ROLE === 'admin' ? 'ADMIN' : 'VIEWER';
-  // Admin-only UI
   const isA = ROLE === 'admin';
+  // Admin-only: financial data edit panel + report edit
   document.getElementById('editDataBtn').style.display = isA ? '' : 'none';
   document.getElementById('editRptBtn').style.display = isA ? '' : 'none';
-  ['btnAdd','btnBatch','btnReorder','btnImport','btnDelSel'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.style.display = isA ? '' : 'none';
-  });
+  // Purchase buttons: ALL users can use (viewer can create their own records)
+  // Only hide delete-by-ID for non-admin
+  const delArea = document.querySelector('.id-del');
+  if(delArea) delArea.style.display = isA ? '' : 'none';
   if (!APP_READY) {
     APP_READY = true;
     initFin();
@@ -671,25 +671,25 @@ function showApp() {
   loadCloud();
 }
 
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
+// ══════════════════════════════════════
 // MODULE SWITCH
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
+// ══════════════════════════════════════
 function goModule(m) {
   ['fin','pur'].forEach(x => {
     document.getElementById('nv-'+x).classList.toggle('active', x===m);
     document.getElementById('pg-'+x).classList.toggle('active', x===m);
   });
   document.getElementById('finNav').style.display = m==='fin' ? '' : 'none';
-  document.getElementById('topBadge').textContent = m==='fin' ? `${AY}�?${AM}` : '?�貨管�?';
+  document.getElementById('topBadge').textContent = m==='fin' ? `${AY}年 ${AM}` : '進貨管理';
 }
 
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
+// ══════════════════════════════════════
 // FINANCIAL DATA
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
-const MO = ['1??,'2??,'3??,'4??,'5??,'6??,'7??,'8??,'9??,'10??,'11??,'12??];
+// ══════════════════════════════════════
+const MO = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 const E = () => ({rev:0,pro:0,shi:0,adt:0,tax:0,one:0,inv:0,adc:0,fb:0,gg:0,fbr:0,ggr:0,afbc:0,afbr:0,agc:0,agr:0,rpt:''});
-let YD = {}; // { 2025: { '1??: {...} } }
-let AY = new Date().getFullYear(), AM = '1??, updT = null, apiKey = '';
+let YD = {}; // { 2025: { '1月': {...} } }
+let AY = new Date().getFullYear(), AM = '1月', updT = null, apiKey = '';
 
 function gd(y,m){ if(!YD[y]) YD[y]={}; if(!YD[y][m]) YD[y][m]=E(); return YD[y][m]; }
 function sd(y,m,d){ if(!YD[y]) YD[y]={}; YD[y][m]={...E(),...d}; }
@@ -701,11 +701,11 @@ function initFin() {
 function buildYr() {
   const s = document.getElementById('yrSel');
   const yrs = [...new Set([AY-1,AY,AY+1,...Object.keys(YD).map(Number)])].sort((a,b)=>b-a);
-  s.innerHTML = yrs.map(y=>`<option value="${y}"${y===AY?' selected':''}>${y} �?/option>`).join('');
+  s.innerHTML = yrs.map(y=>`<option value="${y}"${y===AY?' selected':''}>${y} 年</option>`).join('');
 }
 function changeYear(y) {
   AY=parseInt(y);
-  document.getElementById('topBadge').textContent=`${AY}�?${AM}`;
+  document.getElementById('topBadge').textContent=`${AY}年 ${AM}`;
   loadForm(); renderFin();
 }
 function buildMo() {
@@ -717,7 +717,7 @@ function setMo(m) {
   document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('active'));
   const b=document.getElementById('mb_'+m); if(b) b.classList.add('active');
   AM=m;
-  document.getElementById('topBadge').textContent=`${AY}�?${m}`;
+  document.getElementById('topBadge').textContent=`${AY}年 ${m}`;
   loadForm(); renderFin();
 }
 
@@ -733,7 +733,7 @@ function loadForm() {
   });
   const rc=document.getElementById('aiContent');
   if(d.rpt) rc.innerHTML=d.rpt;
-  else rc.innerHTML='<p style="color:var(--muted);font-style:italic;">尚無?��??��???/p>';
+  else rc.innerHTML='<p style="color:var(--muted);font-style:italic;">尚無分析報告。</p>';
 }
 function getForm() {
   const d={};
@@ -748,7 +748,7 @@ function schedUpd() {
   updT=setTimeout(()=>{ sd(AY,AM,getForm()); renderFin(); },600);
 }
 
-// ?�?� CHARTS ?�?�
+// ── CHARTS ──
 const cOpt = {responsive:true,maintainAspectRatio:false,
   plugins:{legend:{labels:{font:{family:'DM Mono',size:10},color:'#7a7268'}}}};
 let cTr,cPi,cAd,cMa;
@@ -756,21 +756,21 @@ function initCharts(){
   // Destroy existing charts first to prevent canvas reuse error
   [cTr,cPi,cAd,cMa].forEach(c=>{ if(c) c.destroy(); });
   cTr=new Chart(document.getElementById('cTrend'),{type:'line',data:{labels:MO,datasets:[
-    {label:'?�收',data:[],borderColor:'#b8860b',backgroundColor:'rgba(184,134,11,0.06)',tension:.4,borderWidth:2.5,pointRadius:3,fill:true},
-    {label:'?��?',data:[],borderColor:'#1a6b3a',backgroundColor:'rgba(26,107,58,0.06)',tension:.4,borderWidth:2.5,pointRadius:3,fill:true},
-    {label:'�??�?,data:[],borderColor:'#2980b9',backgroundColor:'rgba(41,128,185,0.04)',tension:.4,borderWidth:2,pointRadius:3,borderDash:[5,3]}
-  ]},options:{...cOpt,scales:{y:{ticks:{callback:v=>(v/10000).toFixed(0)+'??,font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{color:'#f0ede7'}},x:{ticks:{font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{display:false}}}}});
-  cPi=new Chart(document.getElementById('cPie'),{type:'doughnut',data:{labels:['�??�?,'?�費','稅�?','一次�?],datasets:[{data:[],backgroundColor:['#c0392b','#b8860b','#2980b9','#7a7268'],borderWidth:0}]},options:{...cOpt,cutout:'65%'}});
+    {label:'營收',data:[],borderColor:'#b8860b',backgroundColor:'rgba(184,134,11,0.06)',tension:.4,borderWidth:2.5,pointRadius:3,fill:true},
+    {label:'損益',data:[],borderColor:'#1a6b3a',backgroundColor:'rgba(26,107,58,0.06)',tension:.4,borderWidth:2.5,pointRadius:3,fill:true},
+    {label:'廣告費',data:[],borderColor:'#2980b9',backgroundColor:'rgba(41,128,185,0.04)',tension:.4,borderWidth:2,pointRadius:3,borderDash:[5,3]}
+  ]},options:{...cOpt,scales:{y:{ticks:{callback:v=>(v/10000).toFixed(0)+'萬',font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{color:'#f0ede7'}},x:{ticks:{font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{display:false}}}}});
+  cPi=new Chart(document.getElementById('cPie'),{type:'doughnut',data:{labels:['廣告費','運費','稅務','一次性'],datasets:[{data:[],backgroundColor:['#c0392b','#b8860b','#2980b9','#7a7268'],borderWidth:0}]},options:{...cOpt,cutout:'65%'}});
   cAd=new Chart(document.getElementById('cAd'),{type:'bar',data:{labels:MO,datasets:[
-    {label:'?��?',data:[],backgroundColor:'rgba(184,134,11,0.8)',stack:'a'},
+    {label:'商線',data:[],backgroundColor:'rgba(184,134,11,0.8)',stack:'a'},
     {label:'Facebook',data:[],backgroundColor:'rgba(192,57,43,0.8)',stack:'a'},
     {label:'Google',data:[],backgroundColor:'rgba(41,128,185,0.8)',stack:'a'}
-  ]},options:{...cOpt,scales:{y:{stacked:true,ticks:{callback:v=>(v/10000).toFixed(0)+'??,font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{color:'#f0ede7'}},x:{stacked:true,ticks:{font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{display:false}}}}});
-  cMa=new Chart(document.getElementById('cMar'),{type:'line',data:{labels:MO,datasets:[{label:'淨利??',data:[],borderColor:'#c0392b',backgroundColor:'rgba(192,57,43,0.08)',tension:.4,borderWidth:2.5,pointRadius:3,fill:true}]},options:{...cOpt,scales:{y:{ticks:{callback:v=>v.toFixed(1)+'%',font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{color:'#f0ede7'}},x:{ticks:{font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{display:false}}}}});
+  ]},options:{...cOpt,scales:{y:{stacked:true,ticks:{callback:v=>(v/10000).toFixed(0)+'萬',font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{color:'#f0ede7'}},x:{stacked:true,ticks:{font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{display:false}}}}});
+  cMa=new Chart(document.getElementById('cMar'),{type:'line',data:{labels:MO,datasets:[{label:'淨利率%',data:[],borderColor:'#c0392b',backgroundColor:'rgba(192,57,43,0.08)',tension:.4,borderWidth:2.5,pointRadius:3,fill:true}]},options:{...cOpt,scales:{y:{ticks:{callback:v=>v.toFixed(1)+'%',font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{color:'#f0ede7'}},x:{ticks:{font:{family:'DM Mono',size:9},color:'#7a7268'},grid:{display:false}}}}});
 }
 
-function fmt(n){return(!n||n===0)?'??:'NT$'+Math.round(n).toLocaleString();}
-function fmtS(n){if(!n)return'??;return Math.abs(n)>=10000?(n/10000).toFixed(1)+'??:n.toLocaleString();}
+function fmt(n){return(!n||n===0)?'—':'NT$'+Math.round(n).toLocaleString();}
+function fmtS(n){if(!n)return'—';return Math.abs(n)>=10000?(n/10000).toFixed(1)+'萬':n.toLocaleString();}
 
 function renderFin(){
   if(!cTr) return;
@@ -780,10 +780,10 @@ function renderFin(){
   for(let i=idx-1;i>=0;i--){const d=gd(AY,MO[i]);if(d.rev>0){prev=d;break;}}
   const r=cur.rev||0,p=cur.pro||0,mg=r>0?p/r*100:0,ads=tAds(cur);
   ['rev','pro','mar','ads'].forEach(k=>{document.getElementById('kc-'+k).textContent='';document.getElementById('kc-'+k).className='kpi-chg';});
-  document.getElementById('kv-rev').textContent=r>0?fmtS(r):'??;
-  document.getElementById('kv-pro').textContent=p>0?fmtS(p):'??;
-  document.getElementById('kv-mar').textContent=r>0?mg.toFixed(2)+'%':'??;
-  document.getElementById('kv-ads').textContent=ads>0?fmtS(ads):'??;
+  document.getElementById('kv-rev').textContent=r>0?fmtS(r):'—';
+  document.getElementById('kv-pro').textContent=p>0?fmtS(p):'—';
+  document.getElementById('kv-mar').textContent=r>0?mg.toFixed(2)+'%':'—';
+  document.getElementById('kv-ads').textContent=ads>0?fmtS(ads):'—';
   if(prev&&prev.rev>0){
     setChg('rev',r,prev.rev);setChg('pro',p,prev.pro);
     setChgM(mg,prev.rev>0?prev.pro/prev.rev*100:0);
@@ -807,38 +807,38 @@ function renderFin(){
 function setChg(k,cur,prev,inv=false){
   if(!prev||prev===0)return;const pct=(cur-prev)/prev*100,up=pct>0,good=inv?!up:up;
   const el=document.getElementById('kc-'+k);
-  el.textContent=(up?'??':'??')+Math.abs(pct).toFixed(1)+'% vs 上�?';
+  el.textContent=(up?'▲ ':'▼ ')+Math.abs(pct).toFixed(1)+'% vs 上月';
   el.className='kpi-chg '+(good?'up':'dn');
 }
 function setChgM(cur,prev){
   const el=document.getElementById('kc-mar');const d=cur-prev,up=d>0;
-  el.textContent=(up?'??':'??')+Math.abs(d).toFixed(2)+'% vs 上�?';el.className='kpi-chg '+(up?'up':'dn');
+  el.textContent=(up?'▲ ':'▼ ')+Math.abs(d).toFixed(2)+'% vs 上月';el.className='kpi-chg '+(up?'up':'dn');
 }
 
 function renderAdsTbl(){
   const d=gd(AY,AM),r=d.rev||0;
   const agT=d.adc||0,agR=(d.afbr||0)+(d.agr||0);
-  let h=`<tr style="background:var(--cream)"><td colspan="5" style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--muted);padding:5px 9px;text-transform:uppercase;">??�??�??�?234 ?��?�?{fmt(agT)}�?/td></tr>`;
+  let h=`<tr style="background:var(--cream)"><td colspan="5" style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--muted);padding:5px 9px;text-transform:uppercase;">▸ 代操廣告（5234 合計：${fmt(agT)}）</td></tr>`;
   const cR=agT>0&&agR>0?agR/agT:0;
-  h+=rRow('�???��?（總�?,agT,agR,r,cR);
-  if(d.afbc>0)h+=rRow('?�??FB費用',d.afbc,d.afbr||0,r,null);
-  if(d.agc>0)h+=rRow('?�??Google費用',d.agc,d.agr||0,r,null);
-  h+=`<tr style="background:var(--cream)"><td colspan="5" style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--muted);padding:5px 9px;text-transform:uppercase;">???��?�??（�??��?確�??��?�?/td></tr>`;
-  h+=rRow('?��? FB�?235�?,d.fb||0,null,r,null,true);
-  h+=rRow('?��? Google�?236�?,d.gg||0,null,r,null,true);
+  h+=rRow('代操商線（總）',agT,agR,r,cR);
+  if(d.afbc>0)h+=rRow('　└ FB費用',d.afbc,d.afbr||0,r,null);
+  if(d.agc>0)h+=rRow('　└ Google費用',d.agc,d.agr||0,r,null);
+  h+=`<tr style="background:var(--cream)"><td colspan="5" style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--muted);padding:5px 9px;text-transform:uppercase;">▸ 自投廣告（請老闆確認成效）</td></tr>`;
+  h+=rRow('自投 FB（5235）',d.fb||0,null,r,null,true);
+  h+=rRow('自投 Google（5236）',d.gg||0,null,r,null,true);
   document.getElementById('adsTbl').innerHTML=h;
 }
 function rRow(name,cost,ret,rev,roi,self=false){
   const r2=roi!=null?roi:(cost>0&&ret>0?ret/cost:0);
   const rate=rev>0&&cost>0?(cost/rev*100):0;
-  const rc=self?`<td colspan="2" style="color:var(--muted);font-size:.72rem;text-align:right;">請老�?確�?</td>`
-    :`<td>${ret>0?fmt(ret):'??}</td><td class="${r2>=5?'roi-g':r2>0?'roi-b':''}">${r2>0?r2.toFixed(2)+'x':'??}</td>`;
-  return `<tr><td style="padding-left:${name.startsWith('?�')?'22px':'12px'}">${name}</td><td>${fmt(cost)}</td>${rc}<td>${rate>0?rate.toFixed(1)+'%':'??}</td></tr>`;
+  const rc=self?`<td colspan="2" style="color:var(--muted);font-size:.72rem;text-align:right;">請老闆確認</td>`
+    :`<td>${ret>0?fmt(ret):'—'}</td><td class="${r2>=5?'roi-g':r2>0?'roi-b':''}">${r2>0?r2.toFixed(2)+'x':'—'}</td>`;
+  return `<tr><td style="padding-left:${name.startsWith('　')?'22px':'12px'}">${name}</td><td>${fmt(cost)}</td>${rc}<td>${rate>0?rate.toFixed(1)+'%':'—'}</td></tr>`;
 }
 function renderExpTbl(){
   const d=gd(AY,AM),r=d.rev||1;
   const adT=(d.adc||0)+(d.adt||0)+(d.fb||0)+(d.gg||0);
-  const items=[{n:'�??費�?計�?5234+5225+5235+5236�?,v:adT},{n:'?�費',v:d.shi||0},{n:'稅�?',v:d.tax||0},{n:'一次性費??,v:d.one||0}].filter(i=>i.v>0);
+  const items=[{n:'廣告費合計（5234+5225+5235+5236）',v:adT},{n:'運費',v:d.shi||0},{n:'稅務',v:d.tax||0},{n:'一次性費用',v:d.one||0}].filter(i=>i.v>0);
   const mx=Math.max(...items.map(i=>i.v/r*100),1);
   document.getElementById('expTbl').innerHTML=items.map(i=>{
     const pct=i.v/r*100;
@@ -846,30 +846,32 @@ function renderExpTbl(){
   }).join('');
 }
 
-// ?�?� EDIT PANEL ?�?�
+// ── EDIT PANEL ──
 function openEditPanel(){ document.getElementById('editBg').classList.add('on'); loadForm(); }
 function closeEditPanel(){ document.getElementById('editBg').classList.remove('on'); }
 
 function chkKey(el){
   apiKey=el.value.trim();const st=document.getElementById('akSt');
   if(!apiKey){st.textContent='';el.style.borderColor='';}
-  else if(apiKey.length>30){st.textContent='??;st.style.color='var(--green)';el.style.borderColor='var(--green)';}
-  else{st.textContent='??;st.style.color='var(--muted)';el.style.borderColor='';}
+  else if(apiKey.length>30){st.textContent='✓';st.style.color='var(--green)';el.style.borderColor='var(--green)';}
+  else{st.textContent='…';st.style.color='var(--muted)';el.style.borderColor='';}
 }
 
 async function saveMonth(){
   const fd=getForm(); fd.rpt=gd(AY,AM).rpt||''; sd(AY,AM,fd); renderFin();
-  setCS('saving','???�步中�?);
+  setCS('saving','☁ 同步中…');
   const{error}=await sb.from('monthly_data').upsert({user_id:CU.id,year:AY,month:AM,data:gd(AY,AM),updated_at:new Date().toISOString()},{onConflict:'user_id,year,month'});
-  if(error){setCS('error','???�步失�?�?+error.message);}
-  else{setCS('saved','??已�?�?);setTimeout(()=>setCS('',''),3000);}
-  showToast('??已儲�?'+AY+'�?+AM);
+  if(error){setCS('error','⚠ 同步失敗：'+error.message);}
+  else{setCS('saved','✓ 已同步');setTimeout(()=>setCS('',''),3000);}
+  showToast('✓ 已儲存 '+AY+'年'+AM);
 }
 function setCS(t,m){const el=document.getElementById('cloudSt');el.className='cloud-st'+(t?' '+t:'');el.textContent=m;if(!t)el.style.display='none';}
 
 async function loadCloud(){
   if(!CU)return;
-  const{data}=await sb.from('monthly_data').select('month,year,data').eq('user_id',CU.id);
+  // Load all financial data (RLS allows all authenticated users to read)
+  const{data,error}=await sb.from('monthly_data').select('month,year,data');
+  if(error){console.error('loadCloud error:',error);return;}
   if(data&&data.length>0){
     data.forEach(r=>{if(r.data)sd(r.year,r.month,r.data);});
     const yrs=[...new Set(data.map(r=>r.year))].sort((a,b)=>b-a);
@@ -879,19 +881,19 @@ async function loadCloud(){
 
 function exportJSON(){
   const b=new Blob([JSON.stringify({YD,AY},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`財�?資�?_${AY}.json`;a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`財務資料_${AY}.json`;a.click();
 }
 function importJSON(inp){
   const r=new FileReader();r.onload=e=>{
-    try{const p=JSON.parse(e.target.result);if(p.YD)YD=p.YD;if(p.AY)AY=p.AY;buildYr();setMo(AM);showToast('??已�??��?�?);}
-    catch{showToast('??載入失�?');}
+    try{const p=JSON.parse(e.target.result);if(p.YD)YD=p.YD;if(p.AY)AY=p.AY;buildYr();setMo(AM);showToast('✓ 已載入備份');}
+    catch{showToast('⚠ 載入失敗');}
   };r.readAsText(inp.files[0]);inp.value='';
 }
 
-// ?�?� AI REPORT ?�?�
+// ── AI REPORT ──
 async function genReport(){
   const rc=document.getElementById('aiContent');
-  if(!apiKey){rc.innerHTML='<p style="color:var(--accent);">??請�?輸入 API Key</p>';return;}
+  if(!apiKey){rc.innerHTML='<p style="color:var(--accent);">⚠ 請先輸入 API Key</p>';return;}
   const d=gd(AY,AM);
   const mg=d.rev>0?(d.pro/d.rev*100).toFixed(2):0;
   const agT=d.adc||0,agR=(d.afbr||0)+(d.agr||0);
@@ -899,77 +901,80 @@ async function genReport(){
   const tot=agT+(d.adt||0)+(d.fb||0)+(d.gg||0);
   const idx=MO.indexOf(AM);let prev=null;
   for(let i=idx-1;i>=0;i--){const pd=gd(AY,MO[i]);if(pd.rev>0){prev=pd;break;}}
-  const prompt=`你是專業財�??��?師�?請用繁�?中�??�寫?�度財�??��??��?，段?��?題用?�】�?示�??��?�?{AY}�?{AM}）�?
-- ?�收：NT$${(d.rev||0).toLocaleString()}，本?��??��?NT$${(d.pro||0).toLocaleString()}，淨?��?�?{mg}%
-${prev?`- 上�?：�??�NT$${prev.rev.toLocaleString()}，�??�NT$${prev.pro.toLocaleString()}，淨?��?${(prev.rev>0?prev.pro/prev.rev*100:0).toFixed(2)}%`:''}
-- �??費�?計�?NT$${tot.toLocaleString()}
-- �??�??�?234）�?NT$${agT.toLocaleString()}${agROI?`，帶?�NT$${agR.toLocaleString()}，ROI:${agROI}x`:'（帶?��?確�?�?}
-- ?��?�??�?225：NT$${(d.adt||0).toLocaleString()}
-- ?��?FB�?235）�?NT$${(d.fb||0).toLocaleString()}（帶?�由?��?確�?�?- ?��?Google�?236）�?NT$${(d.gg||0).toLocaleString()}（帶?�由?��?確�?�?- ?�費：NT$${(d.shi||0).toLocaleString()}，�?次性費?��?NT$${(d.one||0).toLocaleString()}，�??��?貨�?NT$${(d.inv||0).toLocaleString()}
-請�??��??�本?�業績�?要】【�??��??�】【廣?��??��??�】�?�???�數?��??��?ROI，自?��?費用並�??��?確�?）【費?��?構說?�】【�??��??�建議】�?3?�具體建議�??��?�??業客觀?�`;
-  rc.innerHTML='<div style="display:flex;align-items:center;gap:8px;color:var(--muted)"><div class="dots"><span></span><span></span><span></span></div> AI ?��?中�?/div>';
+  const prompt=`你是專業財務分析師，請用繁體中文撰寫月度財務分析報告，段落標題用【】標示。
+數據（${AY}年${AM}）：
+- 營收：NT$${(d.rev||0).toLocaleString()}，本期損益：NT$${(d.pro||0).toLocaleString()}，淨利率：${mg}%
+${prev?`- 上月：營收NT$${prev.rev.toLocaleString()}，損益NT$${prev.pro.toLocaleString()}，淨利率${(prev.rev>0?prev.pro/prev.rev*100:0).toFixed(2)}%`:''}
+- 廣告費合計：NT$${tot.toLocaleString()}
+- 代操廣告（5234）：NT$${agT.toLocaleString()}${agROI?`，帶回NT$${agR.toLocaleString()}，ROI:${agROI}x`:'（帶回待確認）'}
+- 其他廣告費5225：NT$${(d.adt||0).toLocaleString()}
+- 自投FB（5235）：NT$${(d.fb||0).toLocaleString()}（帶回由老闆確認）
+- 自投Google（5236）：NT$${(d.gg||0).toLocaleString()}（帶回由老闆確認）
+- 運費：NT$${(d.shi||0).toLocaleString()}，一次性費用：NT$${(d.one||0).toLocaleString()}，期末存貨：NT$${(d.inv||0).toLocaleString()}
+請包含：【本月業績摘要】【損益分析】【廣告投放效益】（代操有數據則分析ROI，自投僅費用並請老闆確認）【費用結構說明】【下月行動建議】（3項具體建議）。語氣專業客觀。`;
+  rc.innerHTML='<div style="display:flex;align-items:center;gap:8px;color:var(--muted)"><div class="dots"><span></span><span></span><span></span></div> AI 分析中…</div>';
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-3-5-sonnet-20241022',max_tokens:1500,messages:[{role:'user',content:prompt}]})});
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,messages:[{role:'user',content:prompt}]})});
     if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e?.error?.message||`HTTP ${res.status}`);}
     const data=await res.json();
-    const txt=data.content?.[0]?.text||'?��??��?';
-    const html=txt.replace(/??[^?�]+)??g,'<div class="stitle">$1</div>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+    const txt=data.content?.[0]?.text||'無法產生';
+    const html=txt.replace(/【([^】]+)】/g,'<div class="stitle">$1</div>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
     rc.innerHTML='<p>'+html+'</p>';
     gd(AY,AM).rpt=rc.innerHTML;
     if(ROLE==='admin')document.getElementById('editRptBtn').style.display='';
-    showToast('???��?已產?��?請儲�?);
-  }catch(e){rc.innerHTML=`<p style="color:var(--accent);">??${e.message}</p>`;}
+    showToast('✓ 報告已產生，請儲存');
+  }catch(e){rc.innerHTML=`<p style="color:var(--accent);">⚠ ${e.message}</p>`;}
 }
 function toggleEditRpt(){
   const rc=document.getElementById('aiContent');const editing=rc.contentEditable==='true';
   rc.contentEditable=editing?'false':'true';
-  document.getElementById('editRptBtn').textContent=editing?'??編輯':'???��?';
+  document.getElementById('editRptBtn').textContent=editing?'✏ 編輯':'✕ 取消';
   document.getElementById('saveRptBtn').style.display=editing?'none':'';
   if(!editing)rc.focus();
 }
 async function saveRptEdit(){
   const rc=document.getElementById('aiContent');rc.contentEditable='false';
-  document.getElementById('editRptBtn').textContent='??編輯';
+  document.getElementById('editRptBtn').textContent='✏ 編輯';
   document.getElementById('saveRptBtn').style.display='none';
   gd(AY,AM).rpt=rc.innerHTML;
   await sb.from('monthly_data').upsert({user_id:CU.id,year:AY,month:AM,data:gd(AY,AM),updated_at:new Date().toISOString()},{onConflict:'user_id,year,month'});
-  showToast('???��?已儲�?);
+  showToast('✓ 報告已儲存');
 }
 
-// ?�?� PDF PARSE ?�?�
+// ── PDF PARSE ──
 async function handlePDF(inp){if(inp.files[0])await parsePDF(inp.files[0]);}
 async function parsePDF(file){
-  const st=document.getElementById('pdfSt');st.className='pdf-st';st.textContent='??讀?�中??;st.style.display='block';
+  const st=document.getElementById('pdfSt');st.className='pdf-st';st.textContent='⏳ 讀取中…';st.style.display='block';
   try{
     pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
     const buf=await file.arrayBuffer();
     const pdf=await pdfjsLib.getDocument({data:new Uint8Array(buf),disableWorker:true}).promise;
     let txt='';for(let i=1;i<=pdf.numPages;i++){const pg=await pdf.getPage(i);const c=await pg.getTextContent();txt+=c.items.map(x=>x.str).join(' ')+'\n';}
     // Year
-    const rm=txt.match(/(\d{3})\s*�?);if(rm&&parseInt(rm[1])>100){AY=parseInt(rm[1])+1911;buildYr();}
+    const rm=txt.match(/(\d{3})\s*年/);if(rm&&parseInt(rm[1])>100){AY=parseInt(rm[1])+1911;buildYr();}
     // Month
-    const mm={'01':'1??,'02':'2??,'03':'3??,'04':'4??,'05':'5??,'06':'6??,'07':'7??,'08':'8??,'09':'9??,'10':'10??,'11':'11??,'12':'12??};
+    const mm={'01':'1月','02':'2月','03':'3月','04':'4月','05':'5月','06':'6月','07':'7月','08':'8月','09':'9月','10':'10月','11':'11月','12':'12月'};
     const dm=txt.match(/\d{3}\.(\d{2})\.\d{2}/);if(dm&&mm[dm[1]])setMo(mm[dm[1]]);
     // Extract
     const t=txt.replace(/\s+/g,' ');
     function gc(code){const pat=code.split('').join(' ?');const re=new RegExp(pat+' [^\\d]{1,80}?([1-9][\\d]{0,2}(?:,[\\d]{3})+)','');const m=t.match(re);if(!m)return 0;const v=parseFloat(m[1].replace(/,/g,''));return isNaN(v)?0:v;}
     const ex={rev:gc('4 1 0 0'),shi:gc('5214')+gc('5216')+gc('5217'),tax:gc('5222'),adt:gc('5225'),adc:gc('5234'),fb:gc('5235'),gg:gc('5236'),inv:gc('5154')};
-    const pm=t.match(/????????([1-9][\d]{0,2}(?:,[\d]{3})+)/);if(pm)ex.pro=parseFloat(pm[1].replace(/,/g,''));
+    const pm=t.match(/本 期 損 益 ([1-9][\d]{0,2}(?:,[\d]{3})+)/);if(pm)ex.pro=parseFloat(pm[1].replace(/,/g,''));
     let filled=0;
     const autoK={rev:'i_rev',pro:'i_pro',shi:'i_shi',adt:'i_adt',tax:'i_tax',adc:'i_adc',fb:'i_fb',gg:'i_gg',inv:'i_inv'};
     Object.entries(autoK).forEach(([k,id])=>{if(ex[k]>0){const el=document.getElementById(id);if(el){el.value=ex[k];filled++;}}});
     sd(AY,AM,{...gd(AY,AM),...Object.fromEntries(Object.entries(ex).filter(([_,v])=>v>0))});
     renderFin();
-    st.className='pdf-st ok';st.textContent=filled>0?`??�???��?，帶??${filled} ?��?位`:'??已�??��?請�??�填�?;
-  }catch(e){st.className='pdf-st err';st.textContent='??讀?�失?��?'+e.message;}
+    st.className='pdf-st ok';st.textContent=filled>0?`✓ 解析成功，帶入 ${filled} 個欄位`:'✓ 已讀取，請手動填寫';
+  }catch(e){st.className='pdf-st err';st.textContent='⚠ 讀取失敗：'+e.message;}
 }
 
-// ?�?� PDF EXPORT ?�?�
+// ── PDF EXPORT ──
 function exportPDF(){
   const rc=document.getElementById('aiContent');
-  if(rc.innerText.includes('尚無?��??��?')){showToast('??請�??��??��?');return;}
+  if(rc.innerText.includes('尚無分析報告')){showToast('⚠ 請先產生報告');return;}
   const d=gd(AY,AM);const mg=d.rev>0?(d.pro/d.rev*100).toFixed(2):0;
   const t1=document.getElementById('cTrend')?.toDataURL('image/png')||'';
   const t2=document.getElementById('cPie')?.toDataURL('image/png')||'';
@@ -997,25 +1002,25 @@ td:first-child{text-align:left;font-family:'Noto Serif TC',serif;}h2{font-size:.
 .rep p{font-size:.84rem;line-height:1.85;margin-bottom:6px;color:#2c2c2c;}
 @media print{@page{size:A4;margin:0;}.page{margin:0;}}
 </style></head><body>
-<div class="page"><h1>${AY} �?${AM} ?��?�?/h1>
+<div class="page"><h1>${AY} 年 ${AM} 分析表</h1>
 <div class="kpis">
-<div class="kpi"><div class="kl">?��??�收</div><div class="kv">${d.rev?(d.rev/10000).toFixed(1)+'??:'??}</div></div>
-<div class="kpi"><div class="kl">?��??��?</div><div class="kv">${d.pro?(d.pro/10000).toFixed(1)+'??:'??}</div></div>
-<div class="kpi"><div class="kl">淨利??/div><div class="kv">${mg}%</div></div>
-<div class="kpi"><div class="kl">�??�?/div><div class="kv">${tAds(d)?(tAds(d)/10000).toFixed(1)+'??:'??}</div></div>
+<div class="kpi"><div class="kl">本月營收</div><div class="kv">${d.rev?(d.rev/10000).toFixed(1)+'萬':'—'}</div></div>
+<div class="kpi"><div class="kl">本期損益</div><div class="kv">${d.pro?(d.pro/10000).toFixed(1)+'萬':'—'}</div></div>
+<div class="kpi"><div class="kl">淨利率</div><div class="kv">${mg}%</div></div>
+<div class="kpi"><div class="kl">廣告費</div><div class="kv">${tAds(d)?(tAds(d)/10000).toFixed(1)+'萬':'—'}</div></div>
 </div>
 <div class="charts"><img src="${t1}"><img src="${t2}"><img src="${t3}"><img src="${t4}"></div>
-<h2>�??管�?績�?</h2>${at}<h2>費用?��???/h2>${et}</div>
-<div class="page"><h1>${AY} �?${AM} 財�??��??��?</h1><div class="rep">${rc.innerHTML}</div></div>
+<h2>廣告管道績效</h2>${at}<h2>費用率分析</h2>${et}</div>
+<div class="page"><h1>${AY} 年 ${AM} 財務分析報告</h1><div class="rep">${rc.innerHTML}</div></div>
 <script>window.onload=()=>window.print();<\/script></body></html>`);
   win.document.close();
 }
 
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
+// ══════════════════════════════════════
 // PURCHASE MANAGEMENT
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
-const DEF_VEN=['小白?��?','?�念','小田?�具','?��?','?�寶','富鉢','榮�?'];
-const DEF_ACC=['信用??,'?�幣帳戶','大陸帳戶'];
+// ══════════════════════════════════════
+const DEF_VEN=['小白銅雕','灰念','小田茶具','阿里','掏寶','富鉢','榮聖'];
+const DEF_ACC=['信用卡','台幣帳戶','大陸帳戶'];
 let RECS=[], PG=1, PG_SZ=10;
 
 function initPur(){
@@ -1061,6 +1066,7 @@ function initPur(){
 
 async function loadPurCloud(){
   if(!CU)return;
+  // All authenticated users can read purchase records (RLS policy allows this)
   const{data,error}=await sb.from('purchase_records').select('*').order('date',{ascending:false});
   if(error){console.error('loadPur:',error);return;}
   if(data){
@@ -1068,7 +1074,8 @@ async function loadPurCloud(){
       id:r.id,orderId:r.order_id,date:r.date,type:r.type,name:r.name,
       salesPrice:r.sales_price||0,source:r.source,qty:r.qty||1,
       rmbPrice:r.rmb_price||0,rate:r.rate||0,twdPrice:r.twd_price||0,
-      twdTotal:r.twd_total||0,account:r.account||'',vendor:r.vendor||''
+      twdTotal:r.twd_total||0,account:r.account||'',vendor:r.vendor||'',
+      userId:r.user_id  // keep for ownership check
     }));
     updFilters();renderRecs();
   }
@@ -1117,11 +1124,11 @@ function renderRecs(){
   document.getElementById('monTotal').textContent='NT$'+Math.round(tot).toLocaleString();
   const pages=Math.max(1,Math.ceil(fl.length/PG_SZ));if(PG>pages)PG=pages;
   const slice=fl.slice((PG-1)*PG_SZ,PG*PG_SZ);
-  const isA=ROLE==='admin';
+  const isA = ROLE === 'admin';
   document.getElementById('recBody').innerHTML=slice.map(r=>`<tr>
     <td><input type="checkbox" class="rc" data-id="${r.id}"></td>
     <td>${r.date}</td>
-    <td><span class="badge ${r.type==='?�貨'?'bp':'bm'}">${r.type}</span></td>
+    <td><span class="badge ${r.type==='進貨'?'bp':'bm'}">${r.type}</span></td>
     <td style="white-space:normal;min-width:180px">${r.name}</td>
     <td>${r.salesPrice?'NT$'+r.salesPrice.toLocaleString():'-'}</td>
     <td>${r.source}</td><td style="text-align:center">${r.qty}</td>
@@ -1129,18 +1136,18 @@ function renderRecs(){
     <td style="font-weight:700;color:#6366f1">NT$${(r.twdTotal||0).toLocaleString()}</td>
     <td>${r.account}</td><td>${r.vendor}</td>
     <td style="font-size:.76rem;color:#64748b">${r.orderId||'-'}</td>
-    <td><div class="ac">${isA?`<button class="ab ae" onclick="editRec('${r.id}')"><i class="fas fa-pen"></i></button><button class="ab ad2" onclick="delRec('${r.id}')"><i class="fas fa-trash"></i></button>`:''}</div></td>
+    <td><div class="ac">${(isA || r.userId === CU.id || !r.userId)?`<button class="ab ae" onclick="editRec('${r.id}')"><i class="fas fa-pen"></i></button><button class="ab ad2" onclick="delRec('${r.id}')"><i class="fas fa-trash"></i></button>`:''}</div></td>
   </tr>`).join('');
   renderPgn(pages);
 }
 
 function renderPgn(pages){
-  let h=`<button class="pgb" onclick="goPg(${PG-1})" ${PG===1?'disabled':''}>??/button>`;
+  let h=`<button class="pgb" onclick="goPg(${PG-1})" ${PG===1?'disabled':''}>‹</button>`;
   for(let i=1;i<=pages;i++){
     if(i===1||i===pages||Math.abs(i-PG)<=1)h+=`<button class="pgb${i===PG?' on':''}" onclick="goPg(${i})">${i}</button>`;
-    else if(Math.abs(i-PG)===2)h+=`<span style="padding:0 4px;color:#64748b">??/span>`;
+    else if(Math.abs(i-PG)===2)h+=`<span style="padding:0 4px;color:#64748b">…</span>`;
   }
-  h+=`<button class="pgb" onclick="goPg(${PG+1})" ${PG===pages?'disabled':''}>??/button>`;
+  h+=`<button class="pgb" onclick="goPg(${PG+1})" ${PG===pages?'disabled':''}>›</button>`;
   document.getElementById('pgnCtrl').innerHTML=h;
 }
 function goPg(p){PG=p;renderRecs();}
@@ -1150,15 +1157,15 @@ function updFilters(){
   const ua=[...new Set(RECS.map(r=>r.account))].filter(Boolean);
   const vs=[...new Set([...DEF_VEN,...uv])].sort();
   const as=[...new Set([...DEF_ACC,...ua])].sort();
-  document.getElementById('fVendor').innerHTML='<option value="">?�部廠�?</option>'+vs.map(v=>`<option>${v}</option>`).join('');
-  document.getElementById('fAcct').innerHTML='<option value="">?�部帳戶</option>'+as.map(a=>`<option>${a}</option>`).join('');
+  document.getElementById('fVendor').innerHTML='<option value="">全部廠商</option>'+vs.map(v=>`<option>${v}</option>`).join('');
+  document.getElementById('fAcct').innerHTML='<option value="">全部帳戶</option>'+as.map(a=>`<option>${a}</option>`).join('');
   document.getElementById('vList').innerHTML=vs.map(v=>`<option value="${v}">`).join('');
   document.getElementById('aList').innerHTML=as.map(a=>`<option value="${a}">`).join('');
 }
 
 // Add / Edit
 function openAddModal(){
-  document.getElementById('addTitle').textContent='?��?紀??;
+  document.getElementById('addTitle').textContent='新增紀錄';
   document.getElementById('recId').value='';
   document.getElementById('addForm').reset();
   document.getElementById('rDate').value=new Date().toISOString().slice(0,10);
@@ -1169,7 +1176,7 @@ function closeAddModal(){document.getElementById('addMov').classList.remove('on'
 
 function editRec(id){
   const r=RECS.find(x=>x.id===id);if(!r)return;
-  document.getElementById('addTitle').textContent='編輯紀??;
+  document.getElementById('addTitle').textContent='編輯紀錄';
   document.getElementById('recId').value=r.id;
   document.getElementById('rDate').value=r.date;
   document.querySelectorAll('[name=rtype]').forEach(x=>{x.checked=x.value===r.type;});
@@ -1190,7 +1197,7 @@ async function saveRec(e){
   e.preventDefault();
   const id=document.getElementById('recId').value||Date.now().toString()+Math.random().toString(36).substr(2,5);
   const date=document.getElementById('rDate').value;
-  const type=document.querySelector('[name=rtype]:checked')?.value||'?�貨';
+  const type=document.querySelector('[name=rtype]:checked')?.value||'進貨';
   const qty=parseFloat(document.getElementById('rQty').value)||1;
   const twd=parseFloat(document.getElementById('rTwd').value)||0;
   const existing=RECS.find(r=>r.id===id);
@@ -1203,11 +1210,11 @@ async function saveRec(e){
   const idx=RECS.findIndex(r=>r.id===id);
   if(idx>-1)RECS[idx]=rec;else RECS.unshift(rec);
   await savePurRec(rec);
-  closeAddModal();updFilters();renderRecs();showToast('??已儲�?);
+  closeAddModal();updFilters();renderRecs();showToast('✓ 已儲存');
 }
 
 async function delRec(id){
-  if(!confirm('確�??�除�?))return;
+  if(!confirm('確定刪除？'))return;
   RECS=RECS.filter(r=>r.id!==id);await delPurRec(id);updFilters();renderRecs();
 }
 
@@ -1234,12 +1241,12 @@ function addBRow(d){
   const tr=document.createElement('tr');
   tr.innerHTML=`
     <td class="cd"><input type="date" class="bd" value="${date}"></td>
-    <td class="ct"><select class="bt"><option value="?�貨">?�貨</option><option value="?�支">?�支</option></select></td>
-    <td class="cn"><textarea class="bn" placeholder="?��?/?��?" style="width:100%;resize:none;min-height:34px;padding:.3rem;border:1px solid #cbd5e1;border-radius:.4rem;font-size:.82rem;font-family:'Inter',sans-serif;"></textarea></td>
+    <td class="ct"><select class="bt"><option value="進貨">進貨</option><option value="雜支">雜支</option></select></td>
+    <td class="cn"><textarea class="bn" placeholder="品名/摘要" style="width:100%;resize:none;min-height:34px;padding:.3rem;border:1px solid #cbd5e1;border-radius:.4rem;font-size:.82rem;font-family:'Inter',sans-serif;"></textarea></td>
     <td class="cs"><input type="number" class="bsp" value="0" style="width:100%;"></td>
     <td class="cso">
       <select class="bso" onchange="onBRowSrcChange(this)">
-        <option value="大陸">大陸</option><option value="?�灣">?�灣</option>
+        <option value="大陸">大陸</option><option value="台灣">台灣</option>
       </select>
     </td>
     <td class="cq"><input type="number" class="bq" value="1" min="1" oninput="calcBRowTotal(this)" style="width:100%;"></td>
@@ -1293,7 +1300,7 @@ async function saveBatch(){
     const twd=parseFloat(row.querySelector('.btw2')?.value)||0;
     toSave.push({
       id:Date.now().toString()+Math.random().toString(36).substr(2,5)+toSave.length,
-      orderId:genID(date),date,type:row.querySelector('.bt')?.value||'?�貨',name,
+      orderId:genID(date),date,type:row.querySelector('.bt')?.value||'進貨',name,
       salesPrice:parseFloat(row.querySelector('.bsp')?.value)||0,
       source:row.querySelector('.bso')?.value||'大陸',qty,
       rmbPrice:parseFloat(row.querySelector('.br')?.value)||0,
@@ -1302,7 +1309,7 @@ async function saveBatch(){
       account:row.querySelector('.bac')?.value||'',vendor:row.querySelector('.bv')?.value||''
     });
   });
-  if(!toSave.length){showToast('??請至少填寫�?�?);return;}
+  if(!toSave.length){showToast('⚠ 請至少填寫一筆');return;}
   // Batch upsert
   const sbRows=toSave.map(r=>({
     id:r.id,user_id:CU.id,order_id:r.orderId,date:r.date,type:r.type,name:r.name,
@@ -1311,12 +1318,12 @@ async function saveBatch(){
     account:r.account,vendor:r.vendor
   }));
   const{error}=await sb.from('purchase_records').upsert(sbRows,{onConflict:'id'});
-  if(error){showToast('???�端?��?失�?�?+error.message);console.error(error);return;}
+  if(error){showToast('⚠ 雲端儲存失敗：'+error.message);console.error(error);return;}
   RECS=[...toSave,...RECS];
-  closeBatch();updFilters();renderRecs();showToast(`??已儲�?${toSave.length} 筆`);
+  closeBatch();updFilters();renderRecs();showToast(`✓ 已儲存 ${toSave.length} 筆`);
 }
 
-// ?�?� REORDER ?�?�
+// ── REORDER ──
 let roPending = []; // items in pending order list
 
 function openReorderModal() {
@@ -1326,7 +1333,7 @@ function openReorderModal() {
   // Build vendor filter pills
   const vens = [...new Set(RECS.map(r=>r.vendor).filter(Boolean))].sort();
   document.getElementById('roVenFilter').innerHTML =
-    `<button class="pill on" data-v="" onclick="setRoVen(this,'')">?�部</button>` +
+    `<button class="pill on" data-v="" onclick="setRoVen(this,'')">全部</button>` +
     vens.map(v=>`<button class="pill" data-v="${v}" onclick="setRoVen(this,'${v}')">${v}</button>`).join('');
   renderRoList();
   renderRoPending();
@@ -1356,7 +1363,7 @@ function renderRoList() {
 
   const pendingNames = new Set(roPending.map(p=>p._srcId));
   document.getElementById('roList').innerHTML = items.length === 0
-    ? `<div style="padding:2rem;text-align:center;color:#94a3b8;font-size:.85rem;">?�符?��???/div>`
+    ? `<div style="padding:2rem;text-align:center;color:#94a3b8;font-size:.85rem;">無符合結果</div>`
     : items.map(r => {
         const inPending = pendingNames.has(r.id);
         return `<div onclick="toggleRoItem('${r.id}')" style="padding:.65rem 1rem;border-bottom:1px solid #f1f5f9;cursor:pointer;display:flex;align-items:center;gap:.7rem;transition:background .15s;${inPending?'background:#eff6ff;':''}"
@@ -1366,7 +1373,7 @@ function renderRoList() {
           </div>
           <div style="flex:1;min-width:0;">
             <div style="font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name}</div>
-            <div style="font-size:.72rem;color:#64748b;">${r.vendor||'??} · ${r.source} · NT$${(r.twdPrice||0).toLocaleString()}/??/div>
+            <div style="font-size:.72rem;color:#64748b;">${r.vendor||'—'} · ${r.source} · NT$${(r.twdPrice||0).toLocaleString()}/個</div>
           </div>
           <div style="font-family:'DM Mono',monospace;font-size:.72rem;color:#6366f1;flex-shrink:0;">NT$${(r.twdTotal||0).toLocaleString()}</div>
         </div>`;
@@ -1390,7 +1397,7 @@ function toggleRoItem(srcId) {
 function renderRoPending() {
   const tbody = document.getElementById('roPending');
   if (!roPending.length) {
-    tbody.innerHTML = `<tr><td colspan="11" style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:.82rem;">從�??�選?��??��???/td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" style="padding:1.5rem;text-align:center;color:#94a3b8;font-size:.82rem;">從下方選取品項加入</td></tr>`;
     document.getElementById('roTotal').textContent = '$0';
     document.getElementById('roSelCount').textContent = '0';
     return;
@@ -1412,7 +1419,7 @@ function renderRoPending() {
       <td style="padding:.35rem .5rem;">
         <select style="${iStyle}" onchange="onRPSrcChange(this,${i})">
           <option${isCN?' selected':''}>大陸</option>
-          <option${!isCN?' selected':''}>?�灣</option>
+          <option${!isCN?' selected':''}>台灣</option>
         </select>
       </td>
       <td style="padding:.35rem .5rem;text-align:center;">
@@ -1497,12 +1504,12 @@ function removeRoPending(i) {
 }
 
 async function submitReorder() {
-  if (!roPending.length) { showToast('??待�?清單?�空??); return; }
+  if (!roPending.length) { showToast('⚠ 待訂清單是空的'); return; }
   const date = document.getElementById('roDate').value || new Date().toISOString().slice(0,10);
   const newRecs = roPending.map(r => ({
     id: r._newId,
     orderId: genID(date),
-    date, type: r.type||'?�貨', name: r.name,
+    date, type: r.type||'進貨', name: r.name,
     salesPrice: r.salesPrice||0, source: r.source||'大陸',
     qty: r.qty||1, rmbPrice: r.rmbPrice||0, rate: r.rate||0,
     twdPrice: r.twdPrice||0,
@@ -1516,24 +1523,24 @@ async function submitReorder() {
     account:r.account, vendor:r.vendor
   }));
   const { error } = await sb.from('purchase_records').upsert(sbRows, {onConflict:'id'});
-  if (error) { showToast('???�出失�?�?+error.message); return; }
+  if (error) { showToast('⚠ 送出失敗：'+error.message); return; }
   RECS = [...newRecs, ...RECS];
   closeReorder(); updFilters(); renderRecs();
-  showToast(`??已送出 ${newRecs.length} 筆�?次�?貨`);
+  showToast(`✓ 已送出 ${newRecs.length} 筆再次訂貨`);
 }
 
 // Delete
 async function delSelected(){
   const ids=[...document.querySelectorAll('.rc:checked')].map(c=>c.dataset.id);
-  if(!ids.length){showToast('???�勾?�任何�???);return;}
-  if(!confirm(`確�??�除 ${ids.length} 筆�?`))return;
+  if(!ids.length){showToast('⚠ 未勾選任何紀錄');return;}
+  if(!confirm(`確定刪除 ${ids.length} 筆？`))return;
   for(const id of ids)await delPurRec(id);
   RECS=RECS.filter(r=>!ids.includes(r.id));updFilters();renderRecs();
 }
 async function delById(){
   const id=document.getElementById('delIdInp').value.trim();if(!id)return;
-  const t=RECS.filter(r=>r.orderId===id);if(!t.length){showToast('???��??�此?��?');return;}
-  if(!confirm(`?�除?��? ${id} ??${t.length} 筆�?`))return;
+  const t=RECS.filter(r=>r.orderId===id);if(!t.length){showToast('⚠ 找不到此單號');return;}
+  if(!confirm(`刪除單號 ${id} 共 ${t.length} 筆？`))return;
   for(const r of t)await delPurRec(r.id);
   RECS=RECS.filter(r=>r.orderId!==id);document.getElementById('delIdInp').value='';updFilters();renderRecs();
 }
@@ -1541,11 +1548,11 @@ function toggleSelAll(){const c=document.getElementById('selAll').checked;docume
 
 // Excel
 function exportExcel(){
-  const fl=getFiltered();if(!fl.length){showToast('??沒�?資�?');return;}
-  const ws=[['?��?','類別','?��?/?��?','?�售定價','貨�?','?��?','人�?�?��??,'市場?��?','?�幣?�價','?�幣總�?','帳戶','供�?廠�?','?��?']];
+  const fl=getFiltered();if(!fl.length){showToast('⚠ 沒有資料');return;}
+  const ws=[['日期','類別','品名/摘要','銷售定價','貨源','數量','人民幣單價','市場匯率','台幣單價','台幣總額','帳戶','供應廠商','單號']];
   fl.forEach(r=>ws.push([r.date,r.type,r.name,r.salesPrice,r.source,r.qty,r.rmbPrice,r.rate,r.twdPrice,r.twdTotal,r.account,r.vendor,r.orderId]));
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(ws),'?�貨紀??);
-  XLSX.writeFile(wb,`?�貨紀?�_${new Date().toISOString().slice(0,10)}.xlsx`);
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(ws),'進貨紀錄');
+  XLSX.writeFile(wb,`進貨紀錄_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 function handleImport(inp){
   const file=inp.files[0];if(!file)return;
@@ -1555,24 +1562,24 @@ function handleImport(inp){
       const data=new Uint8Array(evt.target.result);
       const wb=XLSX.read(data,{type:'array',cellDates:true,dateNF:'yyyy-mm-dd'});
       const json=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{raw:false,dateNF:'yyyy-mm-dd'});
-      if(!json.length){showToast('???��???);return;}
+      if(!json.length){showToast('⚠ 無資料');return;}
       const today=new Date().toISOString().slice(0,10);
       const imported=[];
       json.forEach((row,i)=>{
-        const qty=parseFloat(row['?��?'])||1,twd=parseFloat(row['?�幣?�價'])||0;
-        let d=row['?��?']?row['?��?'].toString().trim().replace(/\//g,'-'):today;
+        const qty=parseFloat(row['數量'])||1,twd=parseFloat(row['台幣單價'])||0;
+        let d=row['日期']?row['日期'].toString().trim().replace(/\//g,'-'):today;
         if(!d||d.length<8)d=today;
         imported.push({
           id:Date.now().toString()+Math.random().toString(36).substr(2,5)+i,
-          orderId:genID(d),date:d,type:row['類別']||'?�貨',name:row['?��?/?��?']||'?�命??,
-          salesPrice:parseFloat(row['?�售定價'])||0,source:row['貨�?']||'大陸',qty,
-          rmbPrice:parseFloat(row['人�?�?��??])||0,rate:parseFloat(row['市場?��?'])||4.5,
+          orderId:genID(d),date:d,type:row['類別']||'進貨',name:row['品名/摘要']||'未命名',
+          salesPrice:parseFloat(row['銷售定價'])||0,source:row['貨源']||'大陸',qty,
+          rmbPrice:parseFloat(row['人民幣單價'])||0,rate:parseFloat(row['市場匯率'])||4.5,
           twdPrice:twd,twdTotal:Math.round(qty*twd*100)/100,
-          account:row['帳戶']||'',vendor:row['供�?廠�?']||''
+          account:row['帳戶']||'',vendor:row['供應廠商']||''
         });
       });
       // Batch save to Supabase
-      showToast('??上傳�?..');
+      showToast('⏳ 上傳中...');
       const rows=imported.map(r=>({
         id:r.id,user_id:CU.id,order_id:r.orderId,date:r.date,type:r.type,name:r.name,
         sales_price:r.salesPrice||0,source:r.source,qty:r.qty,rmb_price:r.rmbPrice||0,
@@ -1580,18 +1587,18 @@ function handleImport(inp){
         account:r.account,vendor:r.vendor
       }));
       const{error}=await sb.from('purchase_records').upsert(rows,{onConflict:'id'});
-      if(error){console.error('import save error:',error);showToast('???�端?��?失�?�?+error.message);return;}
+      if(error){console.error('import save error:',error);showToast('⚠ 雲端儲存失敗：'+error.message);return;}
       RECS=[...imported,...RECS];
       updFilters();renderRecs();
-      showToast(`???��?導入並儲�?${imported.length} 筆`);
+      showToast(`✓ 成功導入並儲存 ${imported.length} 筆`);
       inp.value='';
-    }catch(err){console.error(err);showToast('??導入失�?，�?檢查?��?');}
+    }catch(err){console.error(err);showToast('⚠ 導入失敗，請檢查格式');}
   };rd.readAsArrayBuffer(file);
 }
 
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
+// ══════════════════════════════════════
 // UTILS
-// ?��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��??��?
+// ══════════════════════════════════════
 function showToast(msg){
   const t=document.createElement('div');t.className='toast';t.textContent=msg;
   document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
