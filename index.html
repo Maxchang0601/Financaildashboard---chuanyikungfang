@@ -901,43 +901,127 @@ async function genReport(){
   const tot=agT+(d.adt||0)+(d.fb||0)+(d.gg||0);
   const idx=MO.indexOf(AM);let prev=null;
   for(let i=idx-1;i>=0;i--){const pd=gd(AY,MO[i]);if(pd.rev>0){prev=pd;break;}}
-  const prompt=`你是專業財務分析師，請用繁體中文撰寫月度財務分析報告，段落標題用【】標示。
-數據（${AY}年${AM}）：
-- 營收：NT$${(d.rev||0).toLocaleString()}，本期損益：NT$${(d.pro||0).toLocaleString()}，淨利率：${mg}%
-${prev?`- 上月：營收NT$${prev.rev.toLocaleString()}，損益NT$${prev.pro.toLocaleString()}，淨利率${(prev.rev>0?prev.pro/prev.rev*100:0).toFixed(2)}%`:''}
-- 廣告費合計：NT$${tot.toLocaleString()}
-- 代操廣告（5234）：NT$${agT.toLocaleString()}${agROI?`，帶回NT$${agR.toLocaleString()}，ROI:${agROI}x`:'（帶回待確認）'}
-- 其他廣告費5225：NT$${(d.adt||0).toLocaleString()}
-- 自投FB（5235）：NT$${(d.fb||0).toLocaleString()}（帶回由老闆確認）
-- 自投Google（5236）：NT$${(d.gg||0).toLocaleString()}（帶回由老闆確認）
-- 運費：NT$${(d.shi||0).toLocaleString()}，一次性費用：NT$${(d.one||0).toLocaleString()}，期末存貨：NT$${(d.inv||0).toLocaleString()}
-請包含：【本月業績摘要】【損益分析】【廣告投放效益】（代操有數據則分析ROI，自投僅費用並請老闆確認）【費用結構說明】【下月行動建議】（3項具體建議）。語氣專業客觀。`;
+  
+  // 計算數據
+  const revChg=prev?(((d.rev-prev.rev)/prev.rev)*100).toFixed(2):0;
+  const profitChg=prev?(((d.pro-prev.pro)/prev.pro)*100).toFixed(2):0;
+  const marginChg=prev?((d.pro/d.rev*100)-(prev.pro/prev.rev*100)).toFixed(2):0;
+  const agT=(d.adc||0);const agR=d.agR||0;
+  const agROI=agT>0&&agR>0?(agR/agT).toFixed(2):null;
+  const tot=agT+(d.adt||0)+(d.fb||0)+(d.gg||0);
+  
+  const prompt=`你是資深財務分析師，現在要撰寫${AY}年${AM}月份的財務分析報告。
+
+【重要要求】
+- 語言：繁體中文，專業客觀
+- 格式：使用【】作為章節標題
+- 風格：參考範例，邏輯清晰、數據準確、深度分析
+- 結構：本月業績摘要 → 損益分析 → 廣告投放效益 → 費用結構說明 → 下月行動建議
+
+【當月數據 (${AY}年${AM}月)】
+• 營收：NT$${(d.rev||0).toLocaleString()}
+• 本期損益：NT$${(d.pro||0).toLocaleString()}
+• 淨利率：${(d.rev>0?(d.pro/d.rev*100).toFixed(2):0)}%
+• 運費：NT$${(d.shi||0).toLocaleString()}
+• 一次性費用：NT$${(d.one||0).toLocaleString()}
+• 稅務費用：NT$${(d.tax||0).toLocaleString()}
+• 期末存貨：NT$${(d.inv||0).toLocaleString()}
+
+【廣告費明細】
+• 代操廣告(5234)：投入 NT$${agT.toLocaleString()}${agROI?`，帶回 NT$${agR.toLocaleString()}，ROI: ${agROI}x`:'（待確認帶回金額）'}
+• 其他廣告費(5225)：NT$${(d.adt||0).toLocaleString()}
+• 自投FB(5235)：NT$${(d.fb||0).toLocaleString()}（老闆確認帶回金額待提供）
+• 自投Google(5236)：NT$${(d.gg||0).toLocaleString()}（老闆確認帶回金額待提供）
+• 廣告費合計：NT$${tot.toLocaleString()}
+
+${prev?`【上月數據 (${AY}年${MO[MO.indexOf(AM)-1]}月) 用於對比】
+• 營收：NT$${prev.rev.toLocaleString()}（環比變化：${revChg}%）
+• 本期損益：NT$${prev.pro.toLocaleString()}（環比變化：${profitChg}%）
+• 淨利率：${(prev.rev>0?(prev.pro/prev.rev*100).toFixed(2):0)}%（環比變化：${marginChg}%）
+• 運費：NT$${(prev.shi||0).toLocaleString()}
+• 一次性費用：NT$${(prev.one||0).toLocaleString()}
+• 稅務費用：NT$${(prev.tax||0).toLocaleString()}
+• 期末存貨：NT$${(prev.inv||0).toLocaleString()}
+`:''}
+
+【報告架構】
+
+【本月業績摘要】
+- 簡述營收對比（本月 vs 上月，金額+百分比）
+- 簡述獲利對比（損益/淨利率）
+- 整體評價（1-2句）
+
+【損益分析】
+- 費用端壓力說明（如有異常變化）
+- 列舉核心主因（3-5項，用編號）
+- 每項主因說明具體金額和原因
+- 總結：為什麼損益會這樣變化
+
+【廣告投放效益】
+- 代操廣告(5234)分析：金額、對比上月、效益評價、ROI
+- 自投FB(5235)：金額、佔比、評價、請老闆確認帶回金額
+- 自投Google(5236)：金額、佔比、評價、請老闆確認帶回金額
+- 廣告費總結
+
+【費用結構說明】
+分項說明主要費用變化（運費、稅務、一次性費用等），格式如下：
+- 費用項目名稱：本月 NT$X、上月 NT$Y、變化 NT$Z（±%）、原因說明
+- 特別注意：
+  • 運費要和前幾月比較，判斷是否合理
+  • 一次性費用和前幾月對比，分析本月高低是否影響損益
+  • 稅務費用說明對獲利的影響
+
+【下月行動建議】
+3項具體可行的建議，包括：
+1. 廣告策略優化（根據ROI和費用效率）
+2. 費用管理或業務方向
+3. 營收或獲利改善方向
+
+【關鍵提醒】
+- 所有數字必須精確，不可編造
+- 如有缺少的數據（如FB/Google帶回金額），明確標註「待老闆確認」
+- 費用結構分析要體現「環比對比」的邏輯
+- 一次性費用和稅務費用要明確說明對淨利的影響
+- 語氣保持專業客觀，避免過於樂觀或悲觀`;
+  
   rc.innerHTML='<div style="display:flex;align-items:center;gap:8px;color:var(--muted)"><div class="dots"><span></span><span></span><span></span></div> AI 分析中…</div>';
   try{
-    // 嘗試多個 Gemini 模型 (按優先順序)
-    const models=['models/gemini-1.5-pro','models/gemini-1.5-flash','models/gemini-2.0-flash-exp'];
-    let lastError=null;
+    // 動態查詢可用的 Gemini 模型,但過濾掉已停用的版本
+    const listRes=await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    if(!listRes.ok) throw new Error('無法取得可用模型列表');
+    const listData=await listRes.json();
     
-    for(const modelName of models){
-      try{
-        const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/${modelName}:generateContent?key=${apiKey}`,{method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
-        if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e?.error?.message||`HTTP ${res.status}`);}
-        const data=await res.json();
-        const txt=data.candidates?.[0]?.content?.parts?.[0]?.text||'無法產生';
-        const html=txt.replace(/【([^】]+)】/g,'<div class="stitle">$1</div>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
-        rc.innerHTML='<p>'+html+'</p>';
-        gd(AY,AM).rpt=rc.innerHTML;
-        if(ROLE==='admin')document.getElementById('editRptBtn').style.display='';
-        showToast('✓ 報告已產生，請儲存');
-        return;
-      }catch(e){
-        lastError=e;
-        continue;
-      }
+    // 優先使用已驗證可用的模型,排除已停用的 2.0/2.5 版本
+    const stableModels=['gemini-1.5-pro','gemini-1.5-flash'];
+    let availModel=listData.models.find(m=>
+      stableModels.some(stable=>m.name.includes(stable)) && 
+      m.supportedGenerationMethods?.includes('generateContent')
+    );
+    
+    // 如果沒有穩定版本,才用其他可用的
+    if(!availModel){
+      availModel=listData.models.find(m=>
+        !m.name.includes('gemini-2.5') && 
+        !m.name.includes('gemini-2.0') &&
+        m.supportedGenerationMethods?.includes('generateContent')
+      );
     }
-    throw lastError||new Error('所有模型均不可用');
+    
+    if(!availModel) throw new Error('找不到支援的 Gemini 模型。請檢查你的 API 密鑰額度');
+    
+    const modelName=availModel.name;
+    
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/${modelName}:generateContent?key=${apiKey}`,{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e?.error?.message||`HTTP ${res.status}`);}
+    const data=await res.json();
+    const txt=data.candidates?.[0]?.content?.parts?.[0]?.text||'無法產生';
+    const html=txt.replace(/【([^】]+)】/g,'<div class="stitle">$1</div>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+    rc.innerHTML='<p>'+html+'</p>';
+    gd(AY,AM).rpt=rc.innerHTML;
+    if(ROLE==='admin')document.getElementById('editRptBtn').style.display='';
+    showToast('✓ 報告已產生，請儲存');
   }catch(e){rc.innerHTML=`<p style="color:var(--accent);">⚠ ${e.message}</p>`;}
 }
 function toggleEditRpt(){
