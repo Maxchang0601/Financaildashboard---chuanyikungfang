@@ -902,20 +902,17 @@ async function genReport(){
   const idx=MO.indexOf(AM);let prev=null;
   for(let i=idx-1;i>=0;i--){const pd=gd(AY,MO[i]);if(pd.rev>0){prev=pd;break;}}
   
-  // 計算數據
+  // 計算數據用於Prompt
   const revChg=prev?(((d.rev-prev.rev)/prev.rev)*100).toFixed(2):0;
   const profitChg=prev?(((d.pro-prev.pro)/prev.pro)*100).toFixed(2):0;
   const marginChg=prev?((d.pro/d.rev*100)-(prev.pro/prev.rev*100)).toFixed(2):0;
-  const agT=(d.adc||0);const agR=d.agR||0;
-  const agROI=agT>0&&agR>0?(agR/agT).toFixed(2):null;
-  const tot=agT+(d.adt||0)+(d.fb||0)+(d.gg||0);
   
   const prompt=`你是資深財務分析師，現在要撰寫${AY}年${AM}月份的財務分析報告。
 
 【重要要求】
 - 語言：繁體中文，專業客觀
 - 格式：使用【】作為章節標題
-- 風格：參考範例，邏輯清晰、數據準確、深度分析
+- 風格：邏輯清晰、數據準確、深度分析
 - 結構：本月業績摘要 → 損益分析 → 廣告投放效益 → 費用結構說明 → 下月行動建議
 
 【當月數據 (${AY}年${AM}月)】
@@ -928,7 +925,7 @@ async function genReport(){
 • 期末存貨：NT$${(d.inv||0).toLocaleString()}
 
 【廣告費明細】
-• 代操廣告(5234)：投入 NT$${agT.toLocaleString()}${agROI?`，帶回 NT$${agR.toLocaleString()}，ROI: ${agROI}x`:'（待確認帶回金額）'}
+• 代操廣告(5234)：投入 NT$${agT.toLocaleString()}${agROI?`，帶回 NT$${(d.agR||0).toLocaleString()}，ROI: ${agROI}x`:'（待確認帶回金額）'}
 • 其他廣告費(5225)：NT$${(d.adt||0).toLocaleString()}
 • 自投FB(5235)：NT$${(d.fb||0).toLocaleString()}（老闆確認帶回金額待提供）
 • 自投Google(5236)：NT$${(d.gg||0).toLocaleString()}（老闆確認帶回金額待提供）
@@ -982,11 +979,10 @@ ${prev?`【上月數據 (${AY}年${MO[MO.indexOf(AM)-1]}月) 用於對比】
 - 如有缺少的數據（如FB/Google帶回金額），明確標註「待老闆確認」
 - 費用結構分析要體現「環比對比」的邏輯
 - 一次性費用和稅務費用要明確說明對淨利的影響
-- 語氣保持專業客觀，避免過於樂觀或悲觀`;
-  
+- 語氣保持專業客觀`;
   rc.innerHTML='<div style="display:flex;align-items:center;gap:8px;color:var(--muted)"><div class="dots"><span></span><span></span><span></span></div> AI 分析中…</div>';
   try{
-    // 動態查詢可用的 Gemini 模型,但過濾掉已停用的版本
+    // 動態查詢可用的 Gemini 模型,過濾掉已停用的版本
     const listRes=await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
     if(!listRes.ok) throw new Error('無法取得可用模型列表');
     const listData=await listRes.json();
