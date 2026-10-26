@@ -1060,12 +1060,13 @@ async function parsePDF(file){
       let seg=t.slice(m.index+m[0].length,m.index+m[0].length+120);
       const nxt=seg.search(/(?<!\d)[1-9]\d{3}(?!\d)/);
       if(nxt>=0)seg=seg.slice(0,nxt);
-      const n=seg.match(/\d{1,3}(?:,\d{3})+|\d+/);
+      // 金額前不可是 - 或中文/英文字（避免抓到「運費-711」的 711）；後不可接 % 或小數點
+      const n=seg.match(/(?<![\-一-鿿\w.\/])(\d{1,3}(?:,\d{3})+|\d+)(?![\d.%])/);
       if(!n)return 0;
-      const v=parseFloat(n[0].replace(/,/g,''));return isNaN(v)?0:v;
+      const v=parseFloat(n[1].replace(/,/g,''));return isNaN(v)?0:v;
     }
     const sh1=gc('5214'),sh2=gc('5216'),sh3=gc('5217');
-    const ex={rev:gc('4 1 0 0'),shi:sh1+sh2+sh3,tax:gc('5222'),adt:gc('5225'),adc:gc('5234'),fb:gc('5235'),gg:gc('5236'),inv:gc('5154')};
+    const ex={rev:gc('4100'),shi:sh1+sh2+sh3,tax:gc('5222'),adt:gc('5225'),adc:gc('5234'),fb:gc('5235'),gg:gc('5236'),inv:gc('5154')};
     window._shiDetail=`運費明細 5214:${sh1.toLocaleString()} 5216:${sh2.toLocaleString()} 5217:${sh3.toLocaleString()}`;
     const pm=t.match(/本 期 損 益 ([1-9][\d]{0,2}(?:,[\d]{3})+)/);if(pm)ex.pro=parseFloat(pm[1].replace(/,/g,''));
     let filled=0;
