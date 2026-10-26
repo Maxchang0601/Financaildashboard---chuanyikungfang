@@ -693,7 +693,8 @@ let AY = new Date().getFullYear(), AM = '1月', updT = null, apiKey = '';
 
 function gd(y,m){ if(!YD[y]) YD[y]={}; if(!YD[y][m]) YD[y][m]=E(); return YD[y][m]; }
 function sd(y,m,d){ if(!YD[y]) YD[y]={}; YD[y][m]={...E(),...d}; }
-function tAds(d){ return (d.adc||0)+(d.adt||0)+(d.fb||0)+(d.gg||0)+(d.afbc||0)+(d.agc||0); }
+// 代操FB/Google費用 是 5234 代操的明細，不可再加總（否則重複計算）
+function tAds(d){ return (d.adc||0)+(d.adt||0)+(d.fb||0)+(d.gg||0); }
 
 function initFin() {
   buildYr(); buildMo(); initCharts(); renderFin();
@@ -794,8 +795,8 @@ function renderFin(){
     return {rev:MO.map(m=>gd(yy,m).rev||0),pro:MO.map(m=>gd(yy,m).pro||0),
     ads:MO.map(m=>tAds(gd(yy,m))),mar:MO.map(m=>{const d=gd(yy,m);return d.rev>0?+(d.pro/d.rev*100).toFixed(2):0;}),
     adc:MO.map(m=>gd(yy,m).adc||0),
-    adf:MO.map(m=>(gd(yy,m).fb||0)+(gd(yy,m).afbc||0)),
-    adg:MO.map(m=>(gd(yy,m).gg||0)+(gd(yy,m).agc||0))};
+    adf:MO.map(m=>(gd(yy,m).fb||0)),
+    adg:MO.map(m=>(gd(yy,m).gg||0))};
   };
   const y=ys(AY);
   cTr.data.datasets[0].data=y.rev;cTr.data.datasets[1].data=y.pro;cTr.data.datasets[2].data=y.ads;cTr.update();
